@@ -54,7 +54,7 @@ Este documento detalha a arquitetura de rede na AWS, a modelagem de banco de dad
                                    4. Atualiza URL da Thumbnail no RDS                                     │
                                    ────────────────────────────────────────────────────────────────────────┘
 
-
+```
 ## 2. Modelo Entidade-Relacionamento (ER)
 
 O banco de dados relacional (Amazon RDS) contém três entidades principais com integridade referencial:

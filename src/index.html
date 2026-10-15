@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VetCare - Sistema de Gestão Veterinária</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f4f7f6; color: #333; line-height: 1.6; }
+        header { background: #008080; color: white; padding: 2rem; text-align: center; }
+        header h1 { margin-bottom: 0.5rem; font-size: 2.2rem; }
+        header p { font-size: 1.1rem; opacity: 0.9; }
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .card-main { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 2rem; text-align: center; }
+        .card-main h2 { color: #008080; margin-bottom: 1rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
+        .card h3 { color: #008080; margin-bottom: 0.5rem; }
+        .card p { color: #555; font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .btn { display: inline-block; background: #008080; color: white; padding: 0.6rem 1.2rem; border-radius: 4px; text-decoration: none; text-align: center; font-weight: bold; transition: background 0.3s; }
+        .btn:hover { background: #006666; }
+        footer { text-align: center; margin-top: 3rem; padding: 1rem; color: #666; font-size: 0.9rem; border-top: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🐾 VetCare</h1>
+        <p>Sistema Inteligente de Gestão para Clínicas Veterinárias</p>
+    </header>
+
+    <div class="container">
+        <div class="card-main">
+            <h2>Bem-vindo ao Protótipo na AWS</h2>
+            <p>Este sistema está estruturado em arquitetura Serverless (AWS Lambda, API Gateway e Amazon RDS Privado) e utiliza armazenamento em nuvem no Amazon S3, operando sob os padrões do AWS Learner Lab.</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <div>
+                    <h3>Gestão de Tutores</h3>
+                    <p>Módulo para cadastro, listagem, atualização e controle de clientes responsáveis pelos animais de estimação.</p>
+                </div>
+                <a href="#" class="btn" onclick="alert('Módulo integrado ao API Gateway - Em desenvolvimento para a Aula 3')">Acessar Tutores</a>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Prontuário dos Pets</h3>
+                    <p>Controle de pacientes, vínculo com veterinários responsáveis, histórico e upload seguro de fotos via S3.</p>
+                </div>
+                <a href="#" class="btn" onclick="alert('Módulo integrado ao API Gateway - Em desenvolvimento para a Aula 3')">Acessar Pets</a>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Relatórios Gerenciais</h3>
+                    <p>Consulta analítica avançada consolidando dados de atendimento por espécie e profissional (JOIN e GROUP BY).</p>
+                </div>
+                <a href="#" class="btn" onclick="alert('Módulo integrado ao API Gateway - Em desenvolvimento para a Aula 3')">Ver Relatórios</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Projeto 2 · Disciplina de Computação em Nuvem · AWS Learner Lab · 2026</p>
+    </footer>
+</body>
+</html>

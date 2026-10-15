@@ -66,7 +66,7 @@ A solução foi projetada utilizando uma **arquitetura Serverless** na AWS para 
 * 📋 **[Especificação do Projeto (`specs/spec.md`)](./specs/spec.md):** Contém os Requisitos Funcionais (RF-01 a RF-05), Requisitos Não-Funcionais (RNF-01 a RNF-05), Personas e Histórias de Usuário.
 * 🏗️ **[Design e Arquitetura (`specs/design.md`)](./specs/design.md):** Contém o Diagrama AWS, DDL SQL do PostgreSQL (`veterinarios`, `tutores`, `pets`), definição de Rotas REST, Security Groups e a **ADR-001** (Adoção de Serverless).
 * 🤖 **[Registro de Uso de IA (`docs/ia-log.md`)](./docs/ia-log.md):** Histórico detalhado de prompts, refinamentos e validações com IA para a Aula 1 e Aula 2.
-* 📋 **Códigos e estrutura do site (`src/index.html`)](./specs/index.html):** Contém o código do site que está hospedagem estática 
+* 📋 **Códigos e estrutura do site (`src/index.html`)](./src/index.html):** Contém o código do site que está hospedagem estática 
 ---
 
 ## 👥 Equipe e Disciplina

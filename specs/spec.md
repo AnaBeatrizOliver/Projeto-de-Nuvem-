@@ -16,7 +16,7 @@ O objetivo deste projeto é construir uma aplicação web robusta, hospedada na 
 * **Dores:** Dificuldade em consultar rapidamente os dados do pet durante o atendimento e falta de relatórios agregados de desempenho e atendimentos da clínica.
 
 ### Persona 2: Lucas Mendes (Recepcionista/Atendente)
-![Lucas Mendes](../docs/assets/persona-lucas.jpg)
+![Lucas Mendes](persona-lucas.jpg)
 * **Perfil:** 24 anos, encarregado da recepção e agendamentos.
 * **Necessidades:** Cadastrar e atualizar tutores e seus respetivos pets de forma rápida, além de vincular a foto do animal de estimação diretamente no perfil do pet.
 * **Dores:** Perda de tempo com formulários complexos e lentidão para atualizar informações dos animais dos clientes.

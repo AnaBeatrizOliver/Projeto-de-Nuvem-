@@ -101,7 +101,7 @@ CREATE TABLE pets (
     CONSTRAINT fk_tutor FOREIGN KEY (tutor_id) REFERENCES tutores(id) ON DELETE RESTRICT,
     CONSTRAINT fk_veterinario FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE RESTRICT
 );
-
+```
 ---
 
 ## 3. Rotas da API (API Gateway + Lambda)

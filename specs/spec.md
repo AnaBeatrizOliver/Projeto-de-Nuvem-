@@ -10,11 +10,13 @@ O objetivo deste projeto é construir uma aplicação web robusta, hospedada na 
 ## 2. Personas
 
 ### Persona 1: Dra. Camila Rocha (Veterinária Chefe)
+![Dra. Camila Rocha](../docs/assets/persona-camila.jpg)
 * **Perfil:** 38 anos, médica veterinária atuante e sócia da clínica.
 * **Necessidades:** Visualizar rapidamente quais pets estão sob sua responsabilidade, acessar fotos atualizadas dos animais e acompanhar relatórios consolidados por espécie/atendimento.
 * **Dores:** Dificuldade em consultar rapidamente os dados do pet durante o atendimento e falta de relatórios agregados de desempenho e atendimentos da clínica.
 
 ### Persona 2: Lucas Mendes (Recepcionista/Atendente)
+![Lucas Mendes](../docs/assets/persona-lucas.jpg)
 * **Perfil:** 24 anos, encarregado da recepção e agendamentos.
 * **Necessidades:** Cadastrar e atualizar tutores e seus respetivos pets de forma rápida, além de vincular a foto do animal de estimação diretamente no perfil do pet.
 * **Dores:** Perda de tempo com formulários complexos e lentidão para atualizar informações dos animais dos clientes.

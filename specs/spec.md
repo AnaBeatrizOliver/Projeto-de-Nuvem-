@@ -24,18 +24,19 @@ O objetivo deste projeto é construir uma aplicação web robusta, hospedada na 
 ---
 
 ## 3. Aplicação dos Requisitos Funcionais e Não-Funcionais
-## 3. Aplicação dos Requisitos no Domínio
 
-| ID | Requisito no Projeto |
+| ID | Descrição no Domínio do Projeto |
 | :--- | :--- |
-| **RF-01** | CRUD de `Tutores` e `Pets` (relacionamento 1:N), vinculados a um `Veterinario`, persistidos no **Amazon RDS**. |
-| **RF-02** | Upload da foto do pet diretamente para o **Amazon S3** via **URL pré-assinada** gerada pelo backend. |
-| **RF-03** | Upload da foto no S3 dispara uma **Lambda** que gera uma miniatura (*thumbnail*) e atualiza a URL no **RDS**. |
-| **RF-04** | Endpoint de relatório (`GET /relatorios/...`) exposto no **API Gateway** + **Lambda**, consultando o banco com `JOIN` e `GROUP BY`. |
-| **RF-05** | Front-end web publicado consumindo a API. |
-| **RNF-01** | RDS em subnet privada, sem acesso público e protegido por Security Groups. |
-| **RNF-02** | Nenhuma senha, chave ou token no repositório Git. |
-| **RNF-03** | Aplicação resiliente a mudanças de IP da EC2 após reinício da sessão no Learner Lab. |
+| **RF-01** | **CRUD Completo:** Gestão de `Tutores` e `Pets` (relacionamento 1:N), além do vínculo com `Veterinários`, persistidos em banco de dados **Amazon RDS**. |
+| **RF-02** | **Upload de Foto via Pre-signed URL:** Envio de imagens/fotos dos pets diretamente para o **Amazon S3** utilizando URLs pré-assinadas geradas pelo backend. |
+| **RF-03** | **Processamento Assíncrono com Evento S3:** O upload de uma nova imagem no S3 dispara uma função **AWS Lambda** que gera uma miniatura (*thumbnail*) da foto e atualiza a URL processada no RDS. |
+| **RF-04** | **Relatório Agregado:** Endpoint (ex: `GET /relatorios/pets-por-especie`) exposto via **API Gateway** e executado via **Lambda**, realizando consulta SQL com `JOIN` entre `pets`, `tutores` e `veterinarios`, com agrupamento (`GROUP BY`). |
+| **RF-05** | **Front-end Web:** Interface web responsiva e publicada consumindo os endpoints da API da clínica. |
+| **RNF-01** | RDS alocado em subnet privada, sem acesso público e protegido por Security Groups estritos. |
+| **RNF-02** | Ausência total de credenciais, chaves de acesso ou senhas fixas no repositório Git. |
+| **RNF-03** | Configuração resiliente a trocas de IP da EC2 (sem IP estático hardcoded) no recarregamento da sessão do Learner Lab. |
+| **RNF-04** | Documentação do Architectural Decision Record (ADR) sobre a escolha de execução do CRUD (Lambda vs Container/EC2). |
+| **RNF-05** | Criação manual/scripted via AWS Console/CLI (sem IaC como CloudFormation ou Terraform), documentada passo a passo no `README.md`. |
 ---
 
 ## 4. Histórias de Usuário (User Stories) e Critérios de Aceite

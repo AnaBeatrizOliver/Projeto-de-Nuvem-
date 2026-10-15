@@ -53,3 +53,42 @@ Este documento detalha a arquitetura de rede na AWS, a modelagem de banco de dad
                                                                                                            │
                                    4. Atualiza URL da Thumbnail no RDS                                     │
                                    ────────────────────────────────────────────────────────────────────────┘
+
+
+-- Tabela de Veterinários
+CREATE TABLE veterinarios (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    crmv VARCHAR(20) UNIQUE NOT NULL,
+    especialidade VARCHAR(50) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Tutores
+CREATE TABLE tutores (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) UNIQUE NOT NULL,
+    telefone VARCHAR(20) NOT NULL,
+    email VARCHAR(100),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Pets
+CREATE TABLE pets (
+    id SERIAL PRIMARY KEY,
+    tutor_id INT NOT NULL,
+    veterinario_id INT NOT NULL,
+    nome VARCHAR(50) NOT NULL,
+    especie VARCHAR(30) NOT NULL,
+    raca VARCHAR(50),
+    idade INT,
+    peso DECIMAL(5,2),
+    foto_url TEXT,
+    foto_thumbnail_url TEXT,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tutor FOREIGN KEY (tutor_id) REFERENCES tutores(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_veterinario FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE RESTRICT
+);
+
+                                   

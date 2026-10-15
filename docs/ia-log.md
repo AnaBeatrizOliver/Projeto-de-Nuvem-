@@ -50,3 +50,43 @@ Este documento registra os prompts, decisões, revisões e refinamentos realizad
 * **Processamento Assíncrono:** S3 Event Trigger ➔ Lambda (Miniatura) ➔ Atualização no RDS.
 * **Relatório:** SQL com `JOIN` entre as 3 tabelas e `GROUP BY`.
 * **Restrições AWS Learner Lab:** Uso exclusivo da `LabRole` / `LabInstanceProfile`, RDS privado, sem IP fixo e sem ferramentas de IaC.
+
+---
+
+## Sessão 2: Design Técnico, Implantação no S3 e Finalização (Aula 2 - 16/10/2026)
+
+### 1. Elaboração do Design e Arquitetura (`specs/design.md`)
+- **Prompt do Usuário:**
+  > "Agora vamos para a Aula 2. Me ajude a criar a documentação técnica de arquitetura, o modelo relacional e o script DDL em PostgreSQL para o VetCare."
+- **Resposta da IA:**
+  * Elaborou o arquivo `specs/design.md` contendo:
+    1. Diagrama ASCII da arquitetura Serverless (S3, API Gateway, Lambda, RDS em subnet privada e S3 Trigger).
+    2. Esquema relacional com DDL SQL completo para as tabelas `veterinarios`, `tutores` e `pets` com chaves estrangeiras (`FOREIGN KEY`).
+    3. Mapeamento detalhado das rotas REST da API e regras dos Security Groups na VPC.
+    4. Registro de Decisão de Arquitetura (**ADR-001: Adoção de Arquitetura Serverless**).
+
+---
+
+### 2. Desenvolvimento e Publicação da Landing Page no S3
+- **Prompt do Usuário:**
+  > "Preciso do código da landing page do VetCare em HTML/CSS para colocar no ar. Como faço o passo a passo no console da AWS para criar o bucket e colocar o site no ar?"
+- **Resposta da IA:**
+  * Forneceu o código `index.html` responsivo e intuitivo, destacando as funcionalidades do sistema e a arquitetura em nuvem.
+  * Guiou o processo passo a passo no console da AWS Learner Lab:
+    1. Ativação do ambiente e navegação até o serviço **Amazon S3**.
+    2. Criação do bucket público com permissões de leitura ajustadas.
+    3. Habilitação do recurso **Static Website Hosting** com documento de índice `index.html`.
+    4. Aplicação da **Bucket Policy** de acesso público (`s3:GetObject`).
+    5. Upload do arquivo `index.html` e validação do endpoint público gerado.
+- **Decisão do Grupo (Usuário):**
+  * Realizou a implantação prática e confirmou a inicialização do protótipo no S3 com sucesso.
+
+---
+
+### 3. Organização e Padronização do Repositório (`README.md`)
+- **Prompt do Usuário:**
+  > "Vamos organizar o README.md para a entrega. Quero um código MD limpo para colar direto no GitHub com a arquitetura e o link do S3."
+- **Resposta da IA:**
+  * Estruturou o arquivo `README.md` principal com cabeçalho, resumo do projeto, link público do protótipo no S3, diagrama de arquitetura formatado em bloco de texto, árvore de diretórios e referências aos documentos internos (`spec.md`, `design.md` e `ia-log.md`).
+
+---

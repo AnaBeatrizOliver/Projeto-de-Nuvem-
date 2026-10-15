@@ -10,7 +10,7 @@ O objetivo deste projeto é construir uma aplicação web robusta, hospedada na 
 ## 2. Personas
 
 ### Persona 1: Dra. Camila Rocha (Veterinária Chefe)
-![Dra. Camila Rocha](../docs/assets/persona-camila.jfif)
+![Dra. Camila Rocha](persona-camila.jfif)
 * **Perfil:** 38 anos, médica veterinária atuante e sócia da clínica.
 * **Necessidades:** Visualizar rapidamente quais pets estão sob sua responsabilidade, acessar fotos atualizadas dos animais e acompanhar relatórios consolidados por espécie/atendimento.
 * **Dores:** Dificuldade em consultar rapidamente os dados do pet durante o atendimento e falta de relatórios agregados de desempenho e atendimentos da clínica.

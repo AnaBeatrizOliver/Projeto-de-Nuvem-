@@ -133,5 +133,5 @@ Se o orçamento do laboratório for ultrapassado, a conta é desativada e **todo
 | :--- | :--- |
 | Ana Beatriz Pereira de Oliveira | 10444937 |
 | Isaac Luiz Koga Carone | 10723323 |
-| *(nome do integrante)* | *(RA)* |
+| Nicholas Lopes Pereira | 10723200|
 | *(nome do integrante)* | *(RA)* |

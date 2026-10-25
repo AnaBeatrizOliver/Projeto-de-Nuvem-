@@ -10,17 +10,17 @@ Cada tarefa está ligada a um requisito do [`spec.md`](./spec.md) e a uma decis�
 
 | ID | Tarefa | Requisito | Responsável | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| T-01 | Criar o repositório e dar acesso ao professor | — | *(definir)* | ✅ |
-| T-02 | Escolher o domínio (clínica veterinária) e escrever o `spec.md` inicial | RF-01 a RF-05 | *(definir)* | ✅ |
-| T-03 | Primeira entrada no `ia-log.md` | — | *(definir)* | ✅ |
+| T-01 | Criar o repositório e dar acesso ao professor | — | Ana Beatriz | ✅ |
+| T-02 | Escolher o domínio (clínica veterinária) e escrever o `spec.md` inicial | RF-01 a RF-05 | Ana Beatriz | ✅ |
+| T-03 | Primeira entrada no `ia-log.md` | — | Ana Beatriz | ✅ |
 
 ## Entrega 2 — 16/10
 
 | ID | Tarefa | Requisito | Responsável | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| T-04 | Escrever critérios de aceite das histórias | Todos | *(definir)* | ✅ |
-| T-05 | `design.md`: diagrama, modelo ER, rotas e ADR do RNF-04 | RNF-04 | *(definir)* | ✅ |
-| T-06 | Publicar a landing page no bucket S3 | RF-05 | *(definir)* | ✅ |
+| T-04 | Escrever critérios de aceite das histórias | Todos | Ana Beatriz | ✅ |
+| T-05 | `design.md`: diagrama, modelo ER, rotas e ADR do RNF-04 | RNF-04 | Ana Beatriz | ✅ |
+| T-06 | Publicar a landing page no bucket S3 | RF-05 | Ana Beatriz | ✅ |
 | T-07 | Revisar a spec com requisitos do domínio após o feedback do professor | RF-06 a RF-09 | Isaac | ✅ |
 
 ## Entrega 3 — 23/10
@@ -31,17 +31,17 @@ Cada tarefa está ligada a um requisito do [`spec.md`](./spec.md) e a uma decis�
 | T-09 | Criar a EC2 `vetcare-app-server` na subnet pública com o `vetcare-ec2-sg` | RF-01, RNF-04 | Nicholas | ✅ |
 | T-10 | Criar o RDS MySQL `vetcare-db` privado (Public access = No) | RF-01, RNF-01 | Nicholas | ✅ |
 | T-11 | Configurar o `vetcare-rds-sg` (3306 somente do SG da EC2) | RNF-01 | Nicholas | ✅ |
-| T-12 | Trocar a senha do RDS exposta durante a implementação | RNF-02 | Nicholas | 🔄 |
+| T-12 | Trocar a senha do RDS exposta durante a implementação | RNF-02 | Nicholas | ✅ |
 | T-13 | Escrever o script `sql/schema.sql` (tabelas e carga inicial) | RF-01 | Isaac | ✅ |
 | T-14 | Implementar a API do CRUD de tutores e pets (`server.js`) | RF-01, RF-09 | Isaac | ✅ |
 | T-15 | Implementar as telas do CRUD (`public/index.html`) | RF-01, RF-05 | Isaac | ✅ |
 | T-16 | Mover as credenciais para o `.env` na EC2 e criar o `.gitignore` | RNF-02 | Isaac | ✅ |
-| T-17 | Instalar a aplicação na EC2, executar os scripts SQL e testar o CRUD | RF-01 | Nicholas | 🔄 |
-| T-18 | Restringir o SSH do `vetcare-ec2-sg` à faixa do EC2 Instance Connect | RNF-01 | Nicholas | ⏳ |
+| T-17 | Instalar a aplicação na EC2, executar os scripts SQL e testar o CRUD | RF-01 | Nicholas | ✅ |
+| T-18 | Restringir o SSH do `vetcare-ec2-sg` à faixa do EC2 Instance Connect | RNF-01 | Nicholas | ✅ |
 | T-19 | Atualizar `design.md` (EC2, MySQL, rede real, Security Groups, ADRs) | RNF-04 | Isaac | ✅ |
 | T-20 | Atualizar `README.md` com o passo a passo da infraestrutura | RNF-03, RNF-05 | Isaac | ✅ |
 | T-21 | Registrar a sessão de implementação no `ia-log.md` | — | Isaac | ✅ |
-| T-22 | Gravar o vídeo de até 5 minutos e enviar no Moodle com o link do repositório | — | *(definir)* | ⏳ |
+| T-22 | Gravar o vídeo de até 5 minutos e enviar no Moodle com o link do repositório | — | Isaac | ✅ |
 
 ## Entrega 4 — 30/10
 

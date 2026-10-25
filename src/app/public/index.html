@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VetCare - Tutores e Pets</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f4f7f6; color: #333; line-height: 1.5; }
+        header { background: #008080; color: white; padding: 1.5rem 1rem; text-align: center; }
+        header h1 { font-size: 2rem; }
+        .status { display: inline-block; margin-top: 0.5rem; padding: 0.2rem 0.8rem; border-radius: 999px; font-size: 0.85rem; background: rgba(255,255,255,0.2); }
+        .status.ok { background: #d4edda; color: #155724; }
+        .status.falha { background: #f8d7da; color: #721c24; }
+        .container { max-width: 1150px; margin: 1.5rem auto; padding: 0 1rem; }
+        .abas { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .aba { background: #e0e0e0; border: none; padding: 0.6rem 1.2rem; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 1rem; }
+        .aba.ativa { background: #008080; color: white; }
+        .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); margin-bottom: 1.5rem; }
+        .card h2 { color: #008080; margin-bottom: 1rem; font-size: 1.25rem; }
+        .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+        label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.2rem; }
+        input, select { padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; width: 100%; font-size: 0.95rem; }
+        .linha { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+        .btn { background: #008080; color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
+        .btn:hover { background: #006666; }
+        .btn-sec { background: #6c757d; }
+        .btn-sec:hover { background: #5a6268; }
+        .btn-perigo { background: #d9534f; }
+        .btn-perigo:hover { background: #c9302c; }
+        .btn-pequeno { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+        .oculto { display: none; }
+        .tabela-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.92rem; }
+        th, td { padding: 0.55rem; border-bottom: 1px solid #e5e5e5; text-align: left; vertical-align: middle; }
+        th { background: #f0f5f5; color: #005f5f; }
+        td.acoes { white-space: nowrap; }
+        .vazio { text-align: center; color: #777; padding: 1.5rem; }
+        .selo { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold; }
+        .selo.ativo { background: #d4edda; color: #155724; }
+        .selo.inativo { background: #e2e3e5; color: #41464b; }
+        #mensagem { position: fixed; top: 1rem; right: 1rem; max-width: 360px; padding: 0.8rem 1rem; border-radius: 6px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 10; }
+        #mensagem.ok { background: #d4edda; color: #155724; }
+        #mensagem.erro { background: #f8d7da; color: #721c24; }
+        footer { text-align: center; padding: 1rem; color: #666; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🐾 VetCare</h1>
+        <p>Gestão de Tutores e Pets</p>
+        <span id="status" class="status">Verificando conexão com o banco...</span>
+    </header>
+
+    <div id="mensagem" class="oculto"></div>
+
+    <div class="container">
+        <div class="abas">
+            <button class="aba ativa" data-aba="tutores">Tutores</button>
+            <button class="aba" data-aba="pets">Pets</button>
+        </div>
+
+        <!-- ============================ TUTORES ============================ -->
+        <section id="aba-tutores">
+            <div class="card">
+                <h2 id="titulo-form-tutor">Cadastrar tutor</h2>
+                <form id="form-tutor">
+                    <input type="hidden" id="tutor-id">
+                    <div class="grade">
+                        <div><label for="tutor-nome">Nome *</label><input id="tutor-nome" required maxlength="100"></div>
+                        <div><label for="tutor-cpf">CPF *</label><input id="tutor-cpf" required placeholder="000.000.000-00"></div>
+                        <div><label for="tutor-telefone">Telefone *</label><input id="tutor-telefone" required placeholder="(11) 99999-9999"></div>
+                        <div><label for="tutor-email">E-mail</label><input id="tutor-email" type="email"></div>
+                    </div>
+                    <div class="linha">
+                        <button type="submit" class="btn" id="btn-salvar-tutor">Salvar tutor</button>
+                        <button type="button" class="btn btn-sec oculto" id="btn-cancelar-tutor">Cancelar edição</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Tutores cadastrados</h2>
+                <form id="form-busca-tutor" class="linha">
+                    <input id="busca-tutor" placeholder="Buscar por nome ou CPF" style="max-width: 320px;">
+                    <button type="submit" class="btn btn-sec">Buscar</button>
+                </form>
+                <div class="tabela-wrap">
+                    <table>
+                        <thead><tr><th>ID</th><th>Nome</th><th>CPF</th><th>Telefone</th><th>E-mail</th><th>Pets</th><th>Ações</th></tr></thead>
+                        <tbody id="tabela-tutores"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== PETS ============================== -->
+        <section id="aba-pets" class="oculto">
+            <div class="card">
+                <h2 id="titulo-form-pet">Cadastrar pet</h2>
+                <form id="form-pet">
+                    <input type="hidden" id="pet-id">
+                    <div class="grade">
+                        <div><label for="pet-nome">Nome *</label><input id="pet-nome" required maxlength="50"></div>
+                        <div>
+                            <label for="pet-especie">Espécie *</label>
+                            <select id="pet-especie" required>
+                                <option value="">Selecione...</option>
+                                <option>Cão</option><option>Gato</option><option>Ave</option>
+                                <option>Roedor</option><option>Réptil</option><option>Outro</option>
+                            </select>
+                        </div>
+                        <div><label for="pet-raca">Raça</label><input id="pet-raca" maxlength="50"></div>
+                        <div><label for="pet-nascimento">Data de nascimento</label><input id="pet-nascimento" type="date"></div>
+                        <div><label for="pet-peso">Peso (kg)</label><input id="pet-peso" type="number" step="0.01" min="0.01"></div>
+                        <div><label for="pet-tutor">Tutor *</label><select id="pet-tutor" required></select></div>
+                        <div><label for="pet-veterinario">Veterinário responsável *</label><select id="pet-veterinario" required></select></div>
+                    </div>
+                    <div class="linha">
+                        <button type="submit" class="btn" id="btn-salvar-pet">Salvar pet</button>
+                        <button type="button" class="btn btn-sec oculto" id="btn-cancelar-pet">Cancelar edição</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Pets cadastrados</h2>
+                <div class="linha">
+                    <label for="filtro-situacao" style="margin: 0;">Situação:</label>
+                    <select id="filtro-situacao" style="max-width: 160px;">
+                        <option value="ativo">Ativos</option>
+                        <option value="inativo">Inativos</option>
+                        <option value="todos">Todos</option>
+                    </select>
+                </div>
+                <div class="tabela-wrap">
+                    <table>
+                        <thead><tr><th>ID</th><th>Nome</th><th>Espécie</th><th>Raça</th><th>Nascimento</th><th>Peso</th><th>Tutor</th><th>Veterinário</th><th>Situação</th><th>Ações</th></tr></thead>
+                        <tbody id="tabela-pets"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>Projeto 2 · Computação em Nuvem · EC2 + Amazon RDS (MySQL) · AWS Learner Lab · 2026</footer>
+
+    <script>
+        // Mesmo servidor que entrega a página: endereço relativo, sem IP fixo no código (RNF-03)
+        const API = '/api';
+        const $ = (id) => document.getElementById(id);
+
+        async function api(metodo, rota, corpo) {
+            const opcoes = { method: metodo, headers: {} };
+            if (corpo !== undefined) {
+                opcoes.headers['Content-Type'] = 'application/json';
+                opcoes.body = JSON.stringify(corpo);
+            }
+            let resposta;
+            try {
+                resposta = await fetch(API + rota, opcoes);
+            } catch {
+                throw new Error('Não foi possível conectar ao servidor. Tente novamente.');
+            }
+            if (resposta.status === 204) return null;
+            const dados = await resposta.json().catch(() => ({}));
+            if (!resposta.ok) throw new Error(dados.erro || `Erro ${resposta.status}`);
+            return dados;
+        }
+
+        const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const dataBR = (iso) => (iso ? iso.slice(0, 10).split('-').reverse().join('/') : '-');
+
+        let temporizador;
+        function mostrar(texto, tipo = 'ok') {
+            const caixa = $('mensagem');
+            caixa.textContent = texto;
+            caixa.className = tipo;
+            clearTimeout(temporizador);
+            temporizador = setTimeout(() => { caixa.className = 'oculto'; }, 4000);
+        }
+
+        async function executar(acao) {
+            try { await acao(); } catch (e) { mostrar(e.message, 'erro'); }
+        }
+
+        // ------------------------------ Conexão ------------------------------
+        async function verificarConexao() {
+            const status = $('status');
+            try {
+                await api('GET', '/health');
+                status.textContent = '● Conectado ao Amazon RDS';
+                status.className = 'status ok';
+            } catch (e) {
+                status.textContent = '● Sem conexão com o banco';
+                status.className = 'status falha';
+            }
+        }
+
+        // ------------------------------- Abas --------------------------------
+        document.querySelectorAll('.aba').forEach((botao) => {
+            botao.addEventListener('click', () => {
+                document.querySelectorAll('.aba').forEach((b) => b.classList.remove('ativa'));
+                botao.classList.add('ativa');
+                const aba = botao.dataset.aba;
+                $('aba-tutores').classList.toggle('oculto', aba !== 'tutores');
+                $('aba-pets').classList.toggle('oculto', aba !== 'pets');
+                if (aba === 'pets') executar(async () => { await carregarOpcoes(); await carregarPets(); });
+            });
+        });
+
+        // ------------------------------ Tutores ------------------------------
+        async function carregarTutores() {
+            const busca = $('busca-tutor').value.trim();
+            const lista = await api('GET', '/tutores' + (busca ? '?busca=' + encodeURIComponent(busca) : ''));
+            $('tabela-tutores').innerHTML = lista.length
+                ? lista.map((t) => `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>${esc(t.nome)}</td>
+                        <td>${esc(t.cpf)}</td>
+                        <td>${esc(t.telefone)}</td>
+                        <td>${esc(t.email || '-')}</td>
+                        <td>${t.total_pets}</td>
+                        <td class="acoes">
+                            <button class="btn btn-sec btn-pequeno" data-acao="editar-tutor" data-id="${t.id}">Editar</button>
+                            <button class="btn btn-perigo btn-pequeno" data-acao="excluir-tutor" data-id="${t.id}">Excluir</button>
+                        </td>
+                    </tr>`).join('')
+                : `<tr><td colspan="7" class="vazio">${busca ? 'Nenhum tutor encontrado' : 'Nenhum tutor cadastrado'}</td></tr>`;
+        }
+
+        function limparFormTutor() {
+            $('form-tutor').reset();
+            $('tutor-id').value = '';
+            $('titulo-form-tutor').textContent = 'Cadastrar tutor';
+            $('btn-salvar-tutor').textContent = 'Salvar tutor';
+            $('btn-cancelar-tutor').classList.add('oculto');
+        }
+
+        $('form-tutor').addEventListener('submit', (e) => {
+            e.preventDefault();
+            executar(async () => {
+                const id = $('tutor-id').value;
+                const corpo = {
+                    nome: $('tutor-nome').value,
+                    cpf: $('tutor-cpf').value,
+                    telefone: $('tutor-telefone').value,
+                    email: $('tutor-email').value,
+                };
+                await api(id ? 'PUT' : 'POST', id ? `/tutores/${id}` : '/tutores', corpo);
+                mostrar(id ? 'Tutor atualizado com sucesso' : 'Tutor cadastrado com sucesso');
+                limparFormTutor();
+                await carregarTutores();
+            });
+        });
+
+        $('btn-cancelar-tutor').addEventListener('click', limparFormTutor);
+        $('form-busca-tutor').addEventListener('submit', (e) => { e.preventDefault(); executar(carregarTutores); });
+
+        async function editarTutor(id) {
+            const t = await api('GET', `/tutores/${id}`);
+            $('tutor-id').value = t.id;
+            $('tutor-nome').value = t.nome;
+            $('tutor-cpf').value = t.cpf;
+            $('tutor-telefone').value = t.telefone;
+            $('tutor-email').value = t.email || '';
+            $('titulo-form-tutor').textContent = `Editando tutor #${t.id}`;
+            $('btn-salvar-tutor').textContent = 'Salvar alterações';
+            $('btn-cancelar-tutor').classList.remove('oculto');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function excluirTutor(id) {
+            if (!confirm('Deseja realmente excluir este tutor?')) return;
+            await api('DELETE', `/tutores/${id}`);
+            mostrar('Tutor excluído com sucesso');
+            await carregarTutores();
+        }
+
+        // -------------------------------- Pets --------------------------------
+        async function carregarOpcoes() {
+            const [tutores, veterinarios] = await Promise.all([api('GET', '/tutores'), api('GET', '/veterinarios')]);
+            const tutorAtual = $('pet-tutor').value;
+            const vetAtual = $('pet-veterinario').value;
+            $('pet-tutor').innerHTML = '<option value="">Selecione o tutor...</option>' +
+                tutores.map((t) => `<option value="${t.id}">${esc(t.nome)} (CPF ${esc(t.cpf)})</option>`).join('');
+            $('pet-veterinario').innerHTML = '<option value="">Selecione o veterinário...</option>' +
+                veterinarios.map((v) => `<option value="${v.id}">${esc(v.nome)} - ${esc(v.especialidade)}</option>`).join('');
+            $('pet-tutor').value = tutorAtual;
+            $('pet-veterinario').value = vetAtual;
+        }
+
+        async function carregarPets() {
+            const situacao = $('filtro-situacao').value;
+            const lista = await api('GET', `/pets?situacao=${situacao}`);
+            $('tabela-pets').innerHTML = lista.length
+                ? lista.map((p) => `
+                    <tr>
+                        <td>${p.id}</td>
+                        <td>${esc(p.nome)}</td>
+                        <td>${esc(p.especie)}</td>
+                        <td>${esc(p.raca || '-')}</td>
+                        <td>${dataBR(p.data_nascimento)}</td>
+                        <td>${p.peso !== null ? p.peso.toFixed(2).replace('.', ',') + ' kg' : '-'}</td>
+                        <td>${esc(p.tutor_nome)}</td>
+                        <td>${esc(p.veterinario_nome)}</td>
+                        <td><span class="selo ${p.ativo ? 'ativo' : 'inativo'}">${p.ativo ? 'Ativo' : 'Inativo'}</span></td>
+                        <td class="acoes">
+                            <button class="btn btn-sec btn-pequeno" data-acao="editar-pet" data-id="${p.id}">Editar</button>
+                            <button class="btn btn-sec btn-pequeno" data-acao="situacao-pet" data-id="${p.id}" data-ativo="${p.ativo}">${p.ativo ? 'Inativar' : 'Reativar'}</button>
+                            <button class="btn btn-perigo btn-pequeno" data-acao="excluir-pet" data-id="${p.id}">Excluir</button>
+                        </td>
+                    </tr>`).join('')
+                : '<tr><td colspan="10" class="vazio">Nenhum pet encontrado</td></tr>';
+        }
+
+        function limparFormPet() {
+            $('form-pet').reset();
+            $('pet-id').value = '';
+            $('titulo-form-pet').textContent = 'Cadastrar pet';
+            $('btn-salvar-pet').textContent = 'Salvar pet';
+            $('btn-cancelar-pet').classList.add('oculto');
+        }
+
+        $('form-pet').addEventListener('submit', (e) => {
+            e.preventDefault();
+            executar(async () => {
+                const id = $('pet-id').value;
+                const corpo = {
+                    nome: $('pet-nome').value,
+                    especie: $('pet-especie').value,
+                    raca: $('pet-raca').value,
+                    data_nascimento: $('pet-nascimento').value,
+                    peso: $('pet-peso').value,
+                    tutor_id: Number($('pet-tutor').value),
+                    veterinario_id: Number($('pet-veterinario').value),
+                };
+                await api(id ? 'PUT' : 'POST', id ? `/pets/${id}` : '/pets', corpo);
+                mostrar(id ? 'Pet atualizado com sucesso' : 'Pet cadastrado com sucesso');
+                limparFormPet();
+                await carregarPets();
+                await carregarTutores();
+            });
+        });
+
+        $('btn-cancelar-pet').addEventListener('click', limparFormPet);
+        $('filtro-situacao').addEventListener('change', () => executar(carregarPets));
+
+        async function editarPet(id) {
+            await carregarOpcoes();
+            const p = await api('GET', `/pets/${id}`);
+            $('pet-id').value = p.id;
+            $('pet-nome').value = p.nome;
+            $('pet-especie').value = p.especie;
+            $('pet-raca').value = p.raca || '';
+            $('pet-nascimento').value = p.data_nascimento ? p.data_nascimento.slice(0, 10) : '';
+            $('pet-peso').value = p.peso ?? '';
+            $('pet-tutor').value = p.tutor_id;
+            $('pet-veterinario').value = p.veterinario_id;
+            $('titulo-form-pet').textContent = `Editando pet #${p.id}`;
+            $('btn-salvar-pet').textContent = 'Salvar alterações';
+            $('btn-cancelar-pet').classList.remove('oculto');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function alternarSituacao(id, ativoAtual) {
+            await api('PATCH', `/pets/${id}/situacao`, { ativo: !ativoAtual });
+            mostrar(ativoAtual ? 'Pet inativado' : 'Pet reativado');
+            await carregarPets();
+        }
+
+        async function excluirPet(id) {
+            if (!confirm('Deseja realmente excluir este pet?')) return;
+            await api('DELETE', `/pets/${id}`);
+            mostrar('Pet excluído com sucesso');
+            await carregarPets();
+            await carregarTutores();
+        }
+
+        // ------------------- Botões das tabelas (delegação) -------------------
+        document.addEventListener('click', (e) => {
+            const botao = e.target.closest('[data-acao]');
+            if (!botao) return;
+            const id = Number(botao.dataset.id);
+            const acoes = {
+                'editar-tutor': () => editarTutor(id),
+                'excluir-tutor': () => excluirTutor(id),
+                'editar-pet': () => editarPet(id),
+                'situacao-pet': () => alternarSituacao(id, botao.dataset.ativo === 'true'),
+                'excluir-pet': () => excluirPet(id),
+            };
+            if (acoes[botao.dataset.acao]) executar(acoes[botao.dataset.acao]);
+        });
+
+        // ---------------------------- Inicialização ----------------------------
+        verificarConexao();
+        executar(carregarTutores);
+    </script>
+</body>
+</html>

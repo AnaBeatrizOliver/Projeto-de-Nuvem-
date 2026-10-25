@@ -1,0 +1,14 @@
+{
+  "name": "vetcare-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VetCare - CRUD de tutores e pets (RF-01) executando na EC2 com RDS MySQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --env-file=.env server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mysql2": "^3.11.0"
+  }
+}

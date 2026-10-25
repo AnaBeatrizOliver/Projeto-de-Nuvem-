@@ -74,7 +74,7 @@ O VetCare é uma aplicação web, publicada na AWS, que centraliza tutores, pets
 * **Para** manter a base de clientes da clínica correta e sem duplicidade.
 
 **Critérios de aceite:**
-1. O cadastro exige nome (3 a 100 caracteres), CPF válido e telefone com 10 ou 11 dígitos. O e-mail é opcional, mas, se informado, precisa ser válido. A mensagem de erro indica qual campo está incorreto.
+1. O cadastro exige nome (3 a 100 caracteres), CPF com 11 dígitos e telefone com 10 ou 11 dígitos. Por se tratar de um projeto acadêmico, CPFs fictícios são aceitos (não há cálculo dos dígitos verificadores). O e-mail é opcional, mas, se informado, precisa ser válido. A mensagem de erro indica qual campo está incorreto.
 2. O CPF não pode se repetir, no cadastro ou na edição, mesmo digitado com ou sem pontuação (mensagem: "CPF já cadastrado").
 3. As alterações feitas na edição ficam gravadas.
 4. A listagem aparece em ordem alfabética, com o CPF mascarado (`***.456.789-**`); o CPF completo aparece apenas na tela de detalhe.

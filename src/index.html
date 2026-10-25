@@ -10,10 +10,10 @@
         header { background: #008080; color: white; padding: 2rem; text-align: center; }
         header h1 { margin-bottom: 0.5rem; font-size: 2.2rem; }
         header p { font-size: 1.1rem; opacity: 0.9; }
-        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
         .card-main { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 2rem; text-align: center; }
         .card-main h2 { color: #008080; margin-bottom: 1rem; }
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
         .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
         .card h3 { color: #008080; margin-bottom: 0.5rem; }
         .card p { color: #555; font-size: 0.95rem; margin-bottom: 1.5rem; }
@@ -25,38 +25,46 @@
 <body>
     <header>
         <h1>🐾 VetCare</h1>
-        <p>Sistema Inteligente de Gestão para Clínicas Veterinárias</p>
+        <p>Sistema de Gestão para Clínicas Veterinárias</p>
     </header>
 
     <div class="container">
         <div class="card-main">
             <h2>Bem-vindo ao Protótipo na AWS</h2>
-            <p>Este sistema está estruturado em arquitetura Serverless (AWS Lambda, API Gateway e Amazon RDS Privado) e utiliza armazenamento em nuvem no Amazon S3, operando sob os padrões do AWS Learner Lab.</p>
+            <p>O VetCare centraliza o cadastro de tutores, pets e consultas da clínica. A aplicação roda na AWS com API Gateway, AWS Lambda, Amazon RDS em rede privada e Amazon S3, dentro do AWS Learner Lab.</p>
         </div>
 
         <div class="card-grid">
             <div class="card">
                 <div>
                     <h3>Gestão de Tutores</h3>
-                    <p>Módulo para cadastro, listagem, atualização e controle de clientes responsáveis pelos animais de estimação.</p>
+                    <p>Cadastro, busca por nome ou CPF, edição e exclusão dos clientes responsáveis pelos animais.</p>
                 </div>
-                <a href="#" class="btn" onclick="alert('Módulo integrado ao API Gateway - Em desenvolvimento para a Aula 3')">Acessar Tutores</a>
+                <a href="#" class="btn" onclick="alert('Módulo em desenvolvimento - disponível na entrega de 23/10'); return false;">Acessar Tutores</a>
             </div>
 
             <div class="card">
                 <div>
-                    <h3>Prontuário dos Pets</h3>
-                    <p>Controle de pacientes, vínculo com veterinários responsáveis, histórico e upload seguro de fotos via S3.</p>
+                    <h3>Gestão de Pets</h3>
+                    <p>Cadastro de pacientes, vínculo com o veterinário responsável, inativação e foto do animal.</p>
                 </div>
-                <a href="#" class="btn" onclick="alert('Módulo integrado ao API Gateway - Em desenvolvimento para a Aula 3')">Acessar Pets</a>
+                <a href="#" class="btn" onclick="alert('Módulo em desenvolvimento - disponível na entrega de 23/10'); return false;">Acessar Pets</a>
             </div>
 
             <div class="card">
                 <div>
-                    <h3>Relatórios Gerenciais</h3>
-                    <p>Consulta analítica avançada consolidando dados de atendimento por espécie e profissional (JOIN e GROUP BY).</p>
+                    <h3>Agenda de Consultas</h3>
+                    <p>Agendamento sem conflito de horário, registro do atendimento e histórico de consultas de cada pet.</p>
                 </div>
-                <a href="#" class="btn" onclick="alert('Módulo integrado ao API Gateway - Em desenvolvimento para a Aula 3')">Ver Relatórios</a>
+                <a href="#" class="btn" onclick="alert('Módulo em desenvolvimento - disponível na entrega de 30/10'); return false;">Acessar Agenda</a>
+            </div>
+
+            <div class="card">
+                <div>
+                    <h3>Relatórios</h3>
+                    <p>Consultas realizadas por veterinário e espécie em um período, para acompanhar a demanda da clínica.</p>
+                </div>
+                <a href="#" class="btn" onclick="alert('Módulo em desenvolvimento - disponível na entrega de 30/10'); return false;">Ver Relatórios</a>
             </div>
         </div>
     </div>

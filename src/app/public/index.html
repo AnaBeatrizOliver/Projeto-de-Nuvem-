@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VetCare - Tutores e Pets</title>
+    <title>VetCare - Gestão da Clínica</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f4f7f6; color: #333; line-height: 1.5; }
@@ -12,24 +12,27 @@
         .status { display: inline-block; margin-top: 0.5rem; padding: 0.2rem 0.8rem; border-radius: 999px; font-size: 0.85rem; background: rgba(255,255,255,0.2); }
         .status.ok { background: #d4edda; color: #155724; }
         .status.falha { background: #f8d7da; color: #721c24; }
-        .container { max-width: 1150px; margin: 1.5rem auto; padding: 0 1rem; }
-        .abas { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; }
+        .abas { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
         .aba { background: #e0e0e0; border: none; padding: 0.6rem 1.2rem; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 1rem; }
         .aba.ativa { background: #008080; color: white; }
         .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); margin-bottom: 1.5rem; }
         .card h2 { color: #008080; margin-bottom: 1rem; font-size: 1.25rem; }
         .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
         label { display: block; font-size: 0.85rem; color: #555; margin-bottom: 0.2rem; }
-        input, select { padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; width: 100%; font-size: 0.95rem; }
+        input, select, textarea { padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; width: 100%; font-size: 0.95rem; }
+        input[type="checkbox"] { width: auto; }
         .linha { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+        .linha label { margin: 0; }
         .btn { background: #008080; color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; }
         .btn:hover { background: #006666; }
+        .btn:disabled { opacity: 0.5; cursor: default; }
         .btn-sec { background: #6c757d; }
         .btn-sec:hover { background: #5a6268; }
         .btn-perigo { background: #d9534f; }
         .btn-perigo:hover { background: #c9302c; }
-        .btn-pequeno { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
-        .oculto { display: none; }
+        .btn-pequeno { padding: 0.3rem 0.6rem; font-size: 0.8rem; margin: 0.1rem 0; }
+        .oculto { display: none !important; }
         .tabela-wrap { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.92rem; }
         th, td { padding: 0.55rem; border-bottom: 1px solid #e5e5e5; text-align: left; vertical-align: middle; }
@@ -37,27 +40,37 @@
         td.acoes { white-space: nowrap; }
         .vazio { text-align: center; color: #777; padding: 1.5rem; }
         .selo { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold; }
-        .selo.ativo { background: #d4edda; color: #155724; }
-        .selo.inativo { background: #e2e3e5; color: #41464b; }
-        #mensagem { position: fixed; top: 1rem; right: 1rem; max-width: 360px; padding: 0.8rem 1rem; border-radius: 6px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 10; }
+        .selo.ativo, .selo.realizada { background: #d4edda; color: #155724; }
+        .selo.inativo, .selo.cancelada { background: #e2e3e5; color: #41464b; }
+        .selo.agendada { background: #cce5ff; color: #004085; }
+        .foto { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; background: #e8f3f3; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #008080; }
+        .foto-texto { font-size: 0.7rem; text-align: center; line-height: 1.1; }
+        .paginacao { display: flex; gap: 0.5rem; align-items: center; justify-content: flex-end; margin-top: 0.75rem; font-size: 0.9rem; color: #555; }
+        .nota { font-size: 0.85rem; color: #666; margin-top: 0.5rem; }
+        #mensagem { position: fixed; top: 1rem; right: 1rem; max-width: 380px; padding: 0.8rem 1rem; border-radius: 6px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 10; }
         #mensagem.ok { background: #d4edda; color: #155724; }
         #mensagem.erro { background: #f8d7da; color: #721c24; }
+        #carregando { position: fixed; bottom: 1rem; right: 1rem; background: #333; color: white; padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.85rem; }
         footer { text-align: center; padding: 1rem; color: #666; font-size: 0.85rem; }
     </style>
 </head>
 <body>
     <header>
         <h1>🐾 VetCare</h1>
-        <p>Gestão de Tutores e Pets</p>
+        <p>Gestão de Tutores, Pets e Consultas</p>
         <span id="status" class="status">Verificando conexão com o banco...</span>
     </header>
 
     <div id="mensagem" class="oculto"></div>
+    <div id="carregando" class="oculto">Carregando...</div>
+    <input type="file" id="arquivo-foto" accept="image/jpeg,image/png" class="oculto">
 
     <div class="container">
         <div class="abas">
             <button class="aba ativa" data-aba="tutores">Tutores</button>
             <button class="aba" data-aba="pets">Pets</button>
+            <button class="aba" data-aba="consultas">Consultas</button>
+            <button class="aba" data-aba="relatorio">Relatório</button>
         </div>
 
         <!-- ============================ TUTORES ============================ -->
@@ -91,6 +104,7 @@
                         <tbody id="tabela-tutores"></tbody>
                     </table>
                 </div>
+                <div class="paginacao" id="paginacao-tutores"></div>
             </div>
         </section>
 
@@ -126,29 +140,135 @@
             <div class="card">
                 <h2>Pets cadastrados</h2>
                 <div class="linha">
-                    <label for="filtro-situacao" style="margin: 0;">Situação:</label>
-                    <select id="filtro-situacao" style="max-width: 160px;">
+                    <label for="filtro-situacao">Situação:</label>
+                    <select id="filtro-situacao" style="max-width: 150px;">
                         <option value="ativo">Ativos</option>
                         <option value="inativo">Inativos</option>
                         <option value="todos">Todos</option>
                     </select>
+                    <label for="filtro-especie">Espécie:</label>
+                    <select id="filtro-especie" style="max-width: 150px;">
+                        <option value="">Todas</option>
+                        <option>Cão</option><option>Gato</option><option>Ave</option>
+                        <option>Roedor</option><option>Réptil</option><option>Outro</option>
+                    </select>
+                    <label for="filtro-tutor">Tutor:</label>
+                    <select id="filtro-tutor" style="max-width: 220px;"><option value="">Todos</option></select>
                 </div>
                 <div class="tabela-wrap">
                     <table>
-                        <thead><tr><th>ID</th><th>Nome</th><th>Espécie</th><th>Raça</th><th>Nascimento</th><th>Peso</th><th>Tutor</th><th>Veterinário</th><th>Situação</th><th>Ações</th></tr></thead>
+                        <thead><tr><th>Foto</th><th>ID</th><th>Nome</th><th>Espécie</th><th>Raça</th><th>Nascimento</th><th>Peso</th><th>Tutor</th><th>Veterinário</th><th>Situação</th><th>Ações</th></tr></thead>
                         <tbody id="tabela-pets"></tbody>
+                    </table>
+                </div>
+                <div class="paginacao" id="paginacao-pets"></div>
+                <p class="nota">Fotos: JPG ou PNG de até 5 MB, enviadas direto para o Amazon S3. A miniatura é gerada automaticamente por uma AWS Lambda.</p>
+            </div>
+
+            <div class="card oculto" id="card-historico">
+                <div class="linha" style="justify-content: space-between;">
+                    <h2 id="titulo-historico" style="margin: 0;">Histórico</h2>
+                    <div class="linha">
+                        <label for="filtro-historico">Status:</label>
+                        <select id="filtro-historico" style="max-width: 150px;">
+                            <option value="">Todos</option>
+                            <option value="agendada">Agendadas</option>
+                            <option value="realizada">Realizadas</option>
+                            <option value="cancelada">Canceladas</option>
+                        </select>
+                        <button type="button" class="btn btn-sec btn-pequeno" id="btn-fechar-historico">Fechar</button>
+                    </div>
+                </div>
+                <div class="tabela-wrap">
+                    <table>
+                        <thead><tr><th>Data e hora</th><th>Veterinário</th><th>Motivo</th><th>Status</th><th>Observações</th></tr></thead>
+                        <tbody id="tabela-historico"></tbody>
                     </table>
                 </div>
             </div>
         </section>
+
+        <!-- ============================ CONSULTAS ============================ -->
+        <section id="aba-consultas" class="oculto">
+            <div class="card">
+                <h2 id="titulo-form-consulta">Agendar consulta</h2>
+                <form id="form-consulta">
+                    <input type="hidden" id="consulta-id">
+                    <div class="grade">
+                        <div><label for="consulta-pet">Pet *</label><select id="consulta-pet" required></select></div>
+                        <div><label for="consulta-veterinario">Veterinário *</label><select id="consulta-veterinario" required></select></div>
+                        <div><label for="consulta-data-hora">Data e hora *</label><input id="consulta-data-hora" type="datetime-local" required></div>
+                        <div><label for="consulta-motivo">Motivo *</label><input id="consulta-motivo" required maxlength="200"></div>
+                        <div><label for="consulta-observacoes">Observações</label><input id="consulta-observacoes"></div>
+                    </div>
+                    <div class="linha" id="linha-encaixe" style="margin-bottom: 1rem;">
+                        <input type="checkbox" id="consulta-realizada">
+                        <label for="consulta-realizada">Atendimento já realizado (encaixe sem agendamento prévio)</label>
+                    </div>
+                    <div class="linha">
+                        <button type="submit" class="btn" id="btn-salvar-consulta">Agendar</button>
+                        <button type="button" class="btn btn-sec oculto" id="btn-cancelar-consulta">Cancelar remarcação</button>
+                    </div>
+                    <p class="nota">Cada consulta dura 30 minutos. Atendimento de segunda a sábado, das 8h às 18h.</p>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Agenda</h2>
+                <div class="linha">
+                    <label for="filtro-data">Dia:</label>
+                    <input id="filtro-data" type="date" style="max-width: 170px;">
+                    <label for="filtro-veterinario">Veterinário:</label>
+                    <select id="filtro-veterinario" style="max-width: 220px;"></select>
+                    <button type="button" class="btn btn-sec btn-pequeno" id="btn-todas-consultas">Ver todos os dias</button>
+                </div>
+                <div class="tabela-wrap">
+                    <table>
+                        <thead><tr><th>Data e hora</th><th>Pet</th><th>Espécie</th><th>Tutor</th><th>Veterinário</th><th>Motivo</th><th>Status</th><th>Ações</th></tr></thead>
+                        <tbody id="tabela-consultas"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ RELATÓRIO ============================ -->
+        <section id="aba-relatorio" class="oculto">
+            <div class="card">
+                <h2>Consultas realizadas por veterinário e espécie</h2>
+                <form id="form-relatorio" class="linha">
+                    <label for="relatorio-inicio">De:</label>
+                    <input id="relatorio-inicio" type="date" style="max-width: 170px;">
+                    <label for="relatorio-fim">Até:</label>
+                    <input id="relatorio-fim" type="date" style="max-width: 170px;">
+                    <button type="submit" class="btn">Gerar relatório</button>
+                </form>
+                <div class="tabela-wrap">
+                    <table>
+                        <thead><tr><th>Veterinário</th><th>Espécie</th><th>Consultas realizadas</th></tr></thead>
+                        <tbody id="tabela-relatorio"><tr><td colspan="3" class="vazio">Escolha o período e clique em Gerar relatório</td></tr></tbody>
+                    </table>
+                </div>
+                <p class="nota" id="nota-relatorio">Dados gerados por uma AWS Lambda exposta pelo Amazon API Gateway.</p>
+            </div>
+        </section>
     </div>
 
-    <footer>Projeto 2 · Computação em Nuvem · EC2 + Amazon RDS (MySQL) · AWS Learner Lab · 2026</footer>
+    <footer>Projeto 2 · Computação em Nuvem · EC2 + Amazon RDS (MySQL) + S3 + Lambda + API Gateway · AWS Learner Lab · 2026</footer>
 
     <script>
         // Mesmo servidor que entrega a página: endereço relativo, sem IP fixo no código (RNF-03)
         const API = '/api';
+        const ITENS_POR_PAGINA = 20;
         const $ = (id) => document.getElementById(id);
+        const config = { relatorio_url: null, fotos_habilitadas: false };
+        const estado = { tutores: [], pets: [], paginaTutores: 1, paginaPets: 1, historicoPet: null, fotoPet: null };
+
+        // ------------------------------ Utilidades ------------------------------
+        let requisicoesAtivas = 0;
+        function carregando(ativo) {
+            requisicoesAtivas += ativo ? 1 : -1;
+            $('carregando').classList.toggle('oculto', requisicoesAtivas <= 0);
+        }
 
         async function api(metodo, rota, corpo) {
             const opcoes = { method: metodo, headers: {} };
@@ -157,10 +277,13 @@
                 opcoes.body = JSON.stringify(corpo);
             }
             let resposta;
+            carregando(true);
             try {
                 resposta = await fetch(API + rota, opcoes);
             } catch {
                 throw new Error('Não foi possível conectar ao servidor. Tente novamente.');
+            } finally {
+                carregando(false);
             }
             if (resposta.status === 204) return null;
             const dados = await resposta.json().catch(() => ({}));
@@ -170,6 +293,11 @@
 
         const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const dataBR = (iso) => (iso ? iso.slice(0, 10).split('-').reverse().join('/') : '-');
+        const dataHoraBR = (texto) => (texto ? `${dataBR(texto)} ${texto.slice(11, 16)}` : '-');
+        const hojeISO = (deslocamentoDias = 0) => {
+            const d = new Date(Date.now() + deslocamentoDias * 86400000);
+            return d.toLocaleDateString('sv-SE', { timeZone: 'America/Sao_Paulo' });
+        };
 
         let temporizador;
         function mostrar(texto, tipo = 'ok') {
@@ -177,15 +305,28 @@
             caixa.textContent = texto;
             caixa.className = tipo;
             clearTimeout(temporizador);
-            temporizador = setTimeout(() => { caixa.className = 'oculto'; }, 4000);
+            temporizador = setTimeout(() => { caixa.className = 'oculto'; }, 4500);
         }
 
         async function executar(acao) {
             try { await acao(); } catch (e) { mostrar(e.message, 'erro'); }
         }
 
+        function paginar(lista, pagina, idPaginacao, aoMudar) {
+            const totalPaginas = Math.max(1, Math.ceil(lista.length / ITENS_POR_PAGINA));
+            const atual = Math.min(pagina, totalPaginas);
+            const caixa = $(idPaginacao);
+            caixa.innerHTML = lista.length > ITENS_POR_PAGINA
+                ? `<span>${lista.length} registros · página ${atual} de ${totalPaginas}</span>
+                   <button class="btn btn-sec btn-pequeno" ${atual === 1 ? 'disabled' : ''} data-pag="-1">Anterior</button>
+                   <button class="btn btn-sec btn-pequeno" ${atual === totalPaginas ? 'disabled' : ''} data-pag="1">Próxima</button>`
+                : (lista.length ? `<span>${lista.length} registro(s)</span>` : '');
+            caixa.querySelectorAll('[data-pag]').forEach((b) => b.addEventListener('click', () => aoMudar(atual + Number(b.dataset.pag))));
+            return lista.slice((atual - 1) * ITENS_POR_PAGINA, atual * ITENS_POR_PAGINA);
+        }
+
         // ------------------------------ Conexão ------------------------------
-        async function verificarConexao() {
+        async function iniciar() {
             const status = $('status');
             try {
                 await api('GET', '/health');
@@ -195,26 +336,38 @@
                 status.textContent = '● Sem conexão com o banco';
                 status.className = 'status falha';
             }
+            try { Object.assign(config, await api('GET', '/config')); } catch (e) { /* segue sem configuração */ }
         }
 
         // ------------------------------- Abas --------------------------------
+        const carregarAba = {
+            tutores: () => carregarTutores(),
+            pets: async () => { await carregarOpcoesPet(); await carregarPets(); },
+            consultas: async () => { await carregarOpcoesConsulta(); await carregarConsultas(); },
+            relatorio: async () => {},
+        };
         document.querySelectorAll('.aba').forEach((botao) => {
             botao.addEventListener('click', () => {
                 document.querySelectorAll('.aba').forEach((b) => b.classList.remove('ativa'));
                 botao.classList.add('ativa');
                 const aba = botao.dataset.aba;
-                $('aba-tutores').classList.toggle('oculto', aba !== 'tutores');
-                $('aba-pets').classList.toggle('oculto', aba !== 'pets');
-                if (aba === 'pets') executar(async () => { await carregarOpcoes(); await carregarPets(); });
+                ['tutores', 'pets', 'consultas', 'relatorio'].forEach((nome) => $(`aba-${nome}`).classList.toggle('oculto', nome !== aba));
+                executar(carregarAba[aba]);
             });
         });
 
         // ------------------------------ Tutores ------------------------------
         async function carregarTutores() {
             const busca = $('busca-tutor').value.trim();
-            const lista = await api('GET', '/tutores' + (busca ? '?busca=' + encodeURIComponent(busca) : ''));
-            $('tabela-tutores').innerHTML = lista.length
-                ? lista.map((t) => `
+            estado.tutores = await api('GET', '/tutores' + (busca ? '?busca=' + encodeURIComponent(busca) : ''));
+            renderizarTutores();
+        }
+
+        function renderizarTutores() {
+            const busca = $('busca-tutor').value.trim();
+            const pagina = paginar(estado.tutores, estado.paginaTutores, 'paginacao-tutores', (p) => { estado.paginaTutores = p; renderizarTutores(); });
+            $('tabela-tutores').innerHTML = pagina.length
+                ? pagina.map((t) => `
                     <tr>
                         <td>${t.id}</td>
                         <td>${esc(t.nome)}</td>
@@ -256,7 +409,7 @@
         });
 
         $('btn-cancelar-tutor').addEventListener('click', limparFormTutor);
-        $('form-busca-tutor').addEventListener('submit', (e) => { e.preventDefault(); executar(carregarTutores); });
+        $('form-busca-tutor').addEventListener('submit', (e) => { e.preventDefault(); estado.paginaTutores = 1; executar(carregarTutores); });
 
         async function editarTutor(id) {
             const t = await api('GET', `/tutores/${id}`);
@@ -279,7 +432,7 @@
         }
 
         // -------------------------------- Pets --------------------------------
-        async function carregarOpcoes() {
+        async function carregarOpcoesPet() {
             const [tutores, veterinarios] = await Promise.all([api('GET', '/tutores'), api('GET', '/veterinarios')]);
             const tutorAtual = $('pet-tutor').value;
             const vetAtual = $('pet-veterinario').value;
@@ -289,14 +442,37 @@
                 veterinarios.map((v) => `<option value="${v.id}">${esc(v.nome)} - ${esc(v.especialidade)}</option>`).join('');
             $('pet-tutor').value = tutorAtual;
             $('pet-veterinario').value = vetAtual;
+            const filtroTutorAtual = $('filtro-tutor').value;
+            $('filtro-tutor').innerHTML = '<option value="">Todos</option>' +
+                tutores.map((t) => `<option value="${t.id}">${esc(t.nome)}</option>`).join('');
+            $('filtro-tutor').value = filtroTutorAtual;
         }
 
         async function carregarPets() {
-            const situacao = $('filtro-situacao').value;
-            const lista = await api('GET', `/pets?situacao=${situacao}`);
-            $('tabela-pets').innerHTML = lista.length
-                ? lista.map((p) => `
+            const parametros = new URLSearchParams({ situacao: $('filtro-situacao').value });
+            if ($('filtro-especie').value) parametros.set('especie', $('filtro-especie').value);
+            if ($('filtro-tutor').value) parametros.set('tutor_id', $('filtro-tutor').value);
+            estado.pets = await api('GET', `/pets?${parametros}`);
+            renderizarPets();
+        }
+
+        function celulaFoto(p) {
+            if (p.foto_status === 'processando') return '<span class="foto foto-texto">processando...</span>';
+            if (p.foto_thumbnail_url) {
+                const original = p.foto_url ? ` onclick="window.open('${esc(p.foto_url)}', '_blank')" style="cursor:pointer" title="Ver foto original"` : '';
+                const aviso = p.foto_status === 'erro' ? '<br><span class="foto-texto" style="color:#c9302c">erro na nova foto</span>' : '';
+                return `<img class="foto" src="${esc(p.foto_thumbnail_url)}" alt="Foto de ${esc(p.nome)}"${original}>${aviso}`;
+            }
+            if (p.foto_status === 'erro') return '<span class="foto foto-texto" style="color:#c9302c">erro no processamento da foto</span>';
+            return '<span class="foto" title="Sem foto">🐾</span>';
+        }
+
+        function renderizarPets() {
+            const pagina = paginar(estado.pets, estado.paginaPets, 'paginacao-pets', (p) => { estado.paginaPets = p; renderizarPets(); });
+            $('tabela-pets').innerHTML = pagina.length
+                ? pagina.map((p) => `
                     <tr>
+                        <td>${celulaFoto(p)}</td>
                         <td>${p.id}</td>
                         <td>${esc(p.nome)}</td>
                         <td>${esc(p.especie)}</td>
@@ -308,11 +484,13 @@
                         <td><span class="selo ${p.ativo ? 'ativo' : 'inativo'}">${p.ativo ? 'Ativo' : 'Inativo'}</span></td>
                         <td class="acoes">
                             <button class="btn btn-sec btn-pequeno" data-acao="editar-pet" data-id="${p.id}">Editar</button>
+                            <button class="btn btn-sec btn-pequeno" data-acao="foto-pet" data-id="${p.id}">Foto</button>
+                            <button class="btn btn-sec btn-pequeno" data-acao="historico-pet" data-id="${p.id}" data-nome="${esc(p.nome)}">Histórico</button>
                             <button class="btn btn-sec btn-pequeno" data-acao="situacao-pet" data-id="${p.id}" data-ativo="${p.ativo}">${p.ativo ? 'Inativar' : 'Reativar'}</button>
                             <button class="btn btn-perigo btn-pequeno" data-acao="excluir-pet" data-id="${p.id}">Excluir</button>
                         </td>
                     </tr>`).join('')
-                : '<tr><td colspan="10" class="vazio">Nenhum pet encontrado</td></tr>';
+                : '<tr><td colspan="11" class="vazio">Nenhum pet encontrado</td></tr>';
         }
 
         function limparFormPet() {
@@ -340,15 +518,16 @@
                 mostrar(id ? 'Pet atualizado com sucesso' : 'Pet cadastrado com sucesso');
                 limparFormPet();
                 await carregarPets();
-                await carregarTutores();
             });
         });
 
         $('btn-cancelar-pet').addEventListener('click', limparFormPet);
-        $('filtro-situacao').addEventListener('change', () => executar(carregarPets));
+        $('filtro-situacao').addEventListener('change', () => { estado.paginaPets = 1; executar(carregarPets); });
+        $('filtro-especie').addEventListener('change', () => { estado.paginaPets = 1; executar(carregarPets); });
+        $('filtro-tutor').addEventListener('change', () => { estado.paginaPets = 1; executar(carregarPets); });
 
         async function editarPet(id) {
-            await carregarOpcoes();
+            await carregarOpcoesPet();
             const p = await api('GET', `/pets/${id}`);
             $('pet-id').value = p.id;
             $('pet-nome').value = p.nome;
@@ -365,9 +544,17 @@
         }
 
         async function alternarSituacao(id, ativoAtual) {
-            await api('PATCH', `/pets/${id}/situacao`, { ativo: !ativoAtual });
-            mostrar(ativoAtual ? 'Pet inativado' : 'Pet reativado');
+            const resultado = await api('PATCH', `/pets/${id}/situacao`, { ativo: !ativoAtual });
+            if (ativoAtual) {
+                const n = resultado.consultas_canceladas;
+                mostrar(n ? `Pet inativado. ${n} consulta(s) futura(s) cancelada(s).` : 'Pet inativado');
+            } else {
+                mostrar('Pet reativado');
+            }
             await carregarPets();
+            if (estado.historicoPet && estado.historicoPet.id === id && !$('card-historico').classList.contains('oculto')) {
+                await carregarHistorico();
+            }
         }
 
         async function excluirPet(id) {
@@ -375,8 +562,227 @@
             await api('DELETE', `/pets/${id}`);
             mostrar('Pet excluído com sucesso');
             await carregarPets();
-            await carregarTutores();
         }
+
+        // ------------------------- Foto do pet (RF-02) -------------------------
+        function escolherFoto(id) {
+            if (!config.fotos_habilitadas) throw new Error('Upload de fotos não configurado no servidor');
+            estado.fotoPet = id;
+            $('arquivo-foto').value = '';
+            $('arquivo-foto').click();
+        }
+
+        $('arquivo-foto').addEventListener('change', () => executar(async () => {
+            const arquivo = $('arquivo-foto').files[0];
+            const id = estado.fotoPet;
+            if (!arquivo || !id) return;
+            if (!['image/jpeg', 'image/png'].includes(arquivo.type)) throw new Error('Formato não permitido: envie JPG ou PNG');
+            if (arquivo.size > 5 * 1024 * 1024) throw new Error('A foto deve ter no máximo 5 MB');
+
+            // 1) o servidor gera a URL pré-assinada; 2) o navegador envia direto para o S3
+            const assinatura = await api('POST', `/pets/${id}/foto/upload-url`, { content_type: arquivo.type });
+            const formulario = new FormData();
+            Object.entries(assinatura.campos).forEach(([chave, valor]) => formulario.append(chave, valor));
+            formulario.append('file', arquivo);
+
+            carregando(true);
+            let envio;
+            try {
+                envio = await fetch(assinatura.url, { method: 'POST', body: formulario });
+            } catch {
+                throw new Error('Falha ao enviar a foto para o S3. Tente novamente.');
+            } finally {
+                carregando(false);
+            }
+            if (!envio.ok) {
+                const texto = await envio.text();
+                if (texto.includes('expired')) throw new Error('O link de envio expirou. Tente novamente.');
+                throw new Error('O S3 recusou o arquivo (formato ou tamanho inválido).');
+            }
+            mostrar('Foto enviada! A miniatura está sendo gerada pela Lambda...');
+            await acompanharMiniatura(id);
+        }));
+
+        async function acompanharMiniatura(id) {
+            for (let tentativa = 0; tentativa < 15; tentativa++) {
+                await new Promise((r) => setTimeout(r, 2000));
+                const pet = await api('GET', `/pets/${id}`);
+                const linha = estado.pets.findIndex((p) => p.id === id);
+                if (linha >= 0) { estado.pets[linha] = pet; renderizarPets(); }
+                if (pet.foto_status === 'pronta' && tentativa > 0) { mostrar('Miniatura gerada com sucesso'); return; }
+                if (pet.foto_status === 'erro') { mostrar('Erro no processamento da foto', 'erro'); return; }
+            }
+        }
+
+        // ----------------------- Histórico do pet (RF-07) -----------------------
+        async function abrirHistorico(id, nome) {
+            estado.historicoPet = { id, nome };
+            $('filtro-historico').value = '';
+            await carregarHistorico();
+            $('card-historico').classList.remove('oculto');
+            $('card-historico').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function carregarHistorico() {
+            const { id, nome } = estado.historicoPet;
+            const status = $('filtro-historico').value;
+            const lista = await api('GET', `/pets/${id}/consultas${status ? '?status=' + status : ''}`);
+            $('titulo-historico').textContent = `Histórico de ${nome}`;
+            $('tabela-historico').innerHTML = lista.length
+                ? lista.map((c) => `
+                    <tr>
+                        <td>${dataHoraBR(c.data_hora)}</td>
+                        <td>${esc(c.veterinario_nome)}</td>
+                        <td>${esc(c.motivo)}</td>
+                        <td><span class="selo ${c.status}">${c.status}</span></td>
+                        <td>${esc(c.observacoes || '-')}</td>
+                    </tr>`).join('')
+                : '<tr><td colspan="5" class="vazio">Nenhuma consulta registrada</td></tr>';
+        }
+
+        $('filtro-historico').addEventListener('change', () => executar(carregarHistorico));
+        $('btn-fechar-historico').addEventListener('click', () => $('card-historico').classList.add('oculto'));
+
+        // --------------------------- Consultas (RF-06) ---------------------------
+        async function carregarOpcoesConsulta() {
+            const [pets, veterinarios] = await Promise.all([api('GET', '/pets?situacao=ativo'), api('GET', '/veterinarios')]);
+            const petAtual = $('consulta-pet').value;
+            const vetAtual = $('consulta-veterinario').value;
+            const filtroAtual = $('filtro-veterinario').value;
+            $('consulta-pet').innerHTML = '<option value="">Selecione o pet...</option>' +
+                pets.map((p) => `<option value="${p.id}">${esc(p.nome)} (${esc(p.especie)}) - tutor ${esc(p.tutor_nome)}</option>`).join('');
+            const opcoesVet = veterinarios.map((v) => `<option value="${v.id}">${esc(v.nome)}</option>`).join('');
+            $('consulta-veterinario').innerHTML = '<option value="">Selecione o veterinário...</option>' + opcoesVet;
+            $('filtro-veterinario').innerHTML = '<option value="">Todos</option>' + opcoesVet;
+            $('consulta-pet').value = petAtual;
+            $('consulta-veterinario').value = vetAtual;
+            $('filtro-veterinario').value = filtroAtual;
+        }
+
+        async function carregarConsultas() {
+            const parametros = new URLSearchParams();
+            if ($('filtro-data').value) parametros.set('data', $('filtro-data').value);
+            if ($('filtro-veterinario').value) parametros.set('veterinario_id', $('filtro-veterinario').value);
+            const lista = await api('GET', `/consultas?${parametros}`);
+            $('tabela-consultas').innerHTML = lista.length
+                ? lista.map((c) => `
+                    <tr>
+                        <td>${dataHoraBR(c.data_hora)}</td>
+                        <td>${esc(c.pet_nome)}</td>
+                        <td>${esc(c.especie)}</td>
+                        <td>${esc(c.tutor_nome)}</td>
+                        <td>${esc(c.veterinario_nome)}</td>
+                        <td>${esc(c.motivo)}</td>
+                        <td><span class="selo ${c.status}">${c.status}</span></td>
+                        <td class="acoes">${c.status === 'agendada' ? `
+                            <button class="btn btn-sec btn-pequeno" data-acao="remarcar-consulta" data-id="${c.id}">Remarcar</button>
+                            <button class="btn btn-pequeno" data-acao="realizar-consulta" data-id="${c.id}">Realizada</button>
+                            <button class="btn btn-perigo btn-pequeno" data-acao="cancelar-consulta" data-id="${c.id}">Cancelar</button>` : '-'}
+                        </td>
+                    </tr>`).join('')
+                : '<tr><td colspan="8" class="vazio">Nenhuma consulta encontrada</td></tr>';
+        }
+
+        function limparFormConsulta() {
+            $('form-consulta').reset();
+            $('consulta-id').value = '';
+            $('consulta-pet').disabled = false;
+            $('linha-encaixe').classList.remove('oculto');
+            $('titulo-form-consulta').textContent = 'Agendar consulta';
+            $('btn-salvar-consulta').textContent = 'Agendar';
+            $('btn-cancelar-consulta').classList.add('oculto');
+        }
+
+        $('consulta-realizada').addEventListener('change', () => {
+            $('btn-salvar-consulta').textContent = $('consulta-realizada').checked ? 'Registrar atendimento' : 'Agendar';
+        });
+
+        $('form-consulta').addEventListener('submit', (e) => {
+            e.preventDefault();
+            executar(async () => {
+                const id = $('consulta-id').value;
+                const corpo = {
+                    pet_id: Number($('consulta-pet').value),
+                    veterinario_id: Number($('consulta-veterinario').value),
+                    data_hora: $('consulta-data-hora').value,
+                    motivo: $('consulta-motivo').value,
+                    observacoes: $('consulta-observacoes').value,
+                    realizada: $('consulta-realizada').checked,
+                };
+                await api(id ? 'PUT' : 'POST', id ? `/consultas/${id}` : '/consultas', corpo);
+                mostrar(id ? 'Consulta remarcada' : (corpo.realizada ? 'Atendimento registrado' : 'Consulta agendada'));
+                $('filtro-data').value = corpo.data_hora.slice(0, 10);
+                limparFormConsulta();
+                await carregarConsultas();
+            });
+        });
+
+        $('btn-cancelar-consulta').addEventListener('click', limparFormConsulta);
+        $('filtro-data').addEventListener('change', () => executar(carregarConsultas));
+        $('filtro-veterinario').addEventListener('change', () => executar(carregarConsultas));
+        $('btn-todas-consultas').addEventListener('click', () => { $('filtro-data').value = ''; executar(carregarConsultas); });
+
+        async function remarcarConsulta(id) {
+            const c = await api('GET', `/consultas/${id}`);
+            $('consulta-id').value = c.id;
+            $('consulta-pet').value = c.pet_id;
+            $('consulta-pet').disabled = true;
+            $('consulta-veterinario').value = c.veterinario_id;
+            $('consulta-data-hora').value = c.data_hora.slice(0, 16).replace(' ', 'T');
+            $('consulta-motivo').value = c.motivo;
+            $('consulta-observacoes').value = c.observacoes || '';
+            $('consulta-realizada').checked = false;
+            $('linha-encaixe').classList.add('oculto');
+            $('titulo-form-consulta').textContent = `Remarcando consulta #${c.id}`;
+            $('btn-salvar-consulta').textContent = 'Salvar remarcação';
+            $('btn-cancelar-consulta').classList.remove('oculto');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function mudarStatusConsulta(id, status) {
+            let observacoes = '';
+            if (status === 'realizada') {
+                const texto = prompt('Observações do atendimento (opcional):');
+                if (texto === null) return;
+                observacoes = texto;
+            } else if (!confirm('Deseja cancelar esta consulta?')) {
+                return;
+            }
+            await api('PATCH', `/consultas/${id}/status`, { status, observacoes });
+            mostrar(status === 'realizada' ? 'Atendimento registrado como realizado' : 'Consulta cancelada');
+            await carregarConsultas();
+        }
+
+        // --------------------------- Relatório (RF-04) ---------------------------
+        $('form-relatorio').addEventListener('submit', (e) => {
+            e.preventDefault();
+            executar(async () => {
+                if (!config.relatorio_url) throw new Error('Endereço do relatório não configurado no servidor');
+                const parametros = new URLSearchParams();
+                if ($('relatorio-inicio').value) parametros.set('inicio', $('relatorio-inicio').value);
+                if ($('relatorio-fim').value) parametros.set('fim', $('relatorio-fim').value);
+
+                // Chamada direta ao API Gateway, que executa a Lambda do relatório
+                carregando(true);
+                let resposta;
+                try {
+                    resposta = await fetch(`${config.relatorio_url}?${parametros}`);
+                } catch {
+                    throw new Error('Não foi possível acessar o relatório. Tente novamente.');
+                } finally {
+                    carregando(false);
+                }
+                const dados = await resposta.json().catch(() => ({}));
+                if (!resposta.ok) throw new Error(dados.erro || `Erro ${resposta.status}`);
+
+                $('tabela-relatorio').innerHTML = dados.resultado.length
+                    ? dados.resultado.map((l) => `
+                        <tr><td>${esc(l.veterinario)}</td><td>${esc(l.especie)}</td><td>${l.total_consultas}</td></tr>`).join('')
+                    : '<tr><td colspan="3" class="vazio">Nenhuma consulta no período</td></tr>';
+                $('nota-relatorio').textContent =
+                    `Período: ${dataBR(dados.periodo.inicio)} a ${dataBR(dados.periodo.fim)} · Dados gerados por uma AWS Lambda exposta pelo Amazon API Gateway.`;
+            });
+        });
 
         // ------------------- Botões das tabelas (delegação) -------------------
         document.addEventListener('click', (e) => {
@@ -387,14 +793,22 @@
                 'editar-tutor': () => editarTutor(id),
                 'excluir-tutor': () => excluirTutor(id),
                 'editar-pet': () => editarPet(id),
+                'foto-pet': async () => escolherFoto(id),
+                'historico-pet': () => abrirHistorico(id, botao.dataset.nome),
                 'situacao-pet': () => alternarSituacao(id, botao.dataset.ativo === 'true'),
                 'excluir-pet': () => excluirPet(id),
+                'remarcar-consulta': () => remarcarConsulta(id),
+                'realizar-consulta': () => mudarStatusConsulta(id, 'realizada'),
+                'cancelar-consulta': () => mudarStatusConsulta(id, 'cancelada'),
             };
             if (acoes[botao.dataset.acao]) executar(acoes[botao.dataset.acao]);
         });
 
         // ---------------------------- Inicialização ----------------------------
-        verificarConexao();
+        $('filtro-data').value = hojeISO();
+        $('relatorio-inicio').value = hojeISO(-30);
+        $('relatorio-fim').value = hojeISO();
+        iniciar();
         executar(carregarTutores);
     </script>
 </body>

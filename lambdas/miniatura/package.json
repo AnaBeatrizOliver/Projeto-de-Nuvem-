@@ -1,0 +1,11 @@
+{
+  "name": "vetcare-lambda-miniatura",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VetCare - Lambda disparada pelo S3 que gera a miniatura da foto do pet e grava no RDS (RF-03)",
+  "main": "index.js",
+  "dependencies": {
+    "jimp": "^1.6.0",
+    "mysql2": "^3.11.0"
+  }
+}

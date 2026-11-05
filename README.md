@@ -1,10 +1,12 @@
 # VetCare — Sistema de Gestão para Clínica Veterinária 🐾
 
-Projeto 2 da disciplina de Computação em Nuvem (turma 5J11 · 2026.02). O VetCare centraliza o cadastro de tutores, pets e consultas de uma clínica veterinária e é publicado na AWS (Learner Lab).
+Projeto 2 da disciplina de Computação em Nuvem (turma 5J11 · 2026.02). O VetCare centraliza o cadastro de tutores, pets, fotos e consultas de uma clínica veterinária e é publicado na AWS (Learner Lab).
+
+🔗 **Repositório:** [github.com/AnaBeatrizOliver/Projeto-de-Nuvem-](https://github.com/AnaBeatrizOliver/Projeto-de-Nuvem-)
 
 🔗 **Landing page (Amazon S3):** [vetcare-site-projeto-nuvem-2026.s3-website-us-east-1.amazonaws.com](http://vetcare-site-projeto-nuvem-2026.s3-website-us-east-1.amazonaws.com/)
 
-🔗 **Aplicação (CRUD de tutores e pets, na EC2):** `http://<IP-público-da-EC2>`. O IP muda a cada nova sessão do Learner Lab; veja a seção 4.9.
+🔗 **Aplicação (na EC2):** `http://<IP-público-da-EC2>`. O IP muda a cada nova sessão do Learner Lab; veja a seção 4.13.
 
 ---
 
@@ -15,9 +17,12 @@ Projeto 2 da disciplina de Computação em Nuvem (turma 5J11 · 2026.02). O VetC
 | Especificação | [`specs/spec.md`](./specs/spec.md) | Problema, personas, aplicação dos requisitos ao domínio e histórias de usuário com critérios de aceite |
 | Arquitetura e design | [`specs/design.md`](./specs/design.md) | Diagrama de arquitetura, modelo ER, rotas da API, Security Groups e ADRs |
 | Tarefas | [`specs/tasks.md`](./specs/tasks.md) | Tarefas com ID, requisito, responsável e status |
-| Registro de uso de IA | [`docs/ia-log.md`](./docs/ia-log.md) | Prompts, o que a IA gerou e o que o grupo aceitou, rejeitou ou corrigiu |
+| Registro de uso de IA | [`docs/ia-log.md`](./docs/ia-log.md) | Prompts, o que a IA gerou, o que o grupo aceitou, rejeitou ou corrigiu, e a reflexão final |
+| Evidências | [`docs/evidencias/`](./docs/evidencias/) | Prints da aplicação e dos recursos da AWS |
 | Script SQL | [`sql/schema.sql`](./sql/schema.sql) | Criação do banco, das tabelas e carga inicial dos veterinários |
-| Aplicação (back-end + telas) | [`src/app/`](./src/app/) | `server.js` (API Node.js/Express), `public/index.html` (telas do CRUD) e `.env.example` |
+| Aplicação (back-end + telas) | [`src/app/`](./src/app/) | `server.js` (API Node.js/Express), `public/index.html` (telas) e `.env.example` |
+| Lambda de miniatura (RF-03) | [`lambdas/miniatura/`](./lambdas/miniatura/) | Gera a miniatura da foto e atualiza o RDS |
+| Lambda de relatório (RF-04) | [`lambdas/relatorio/`](./lambdas/relatorio/) | Relatório com JOIN e GROUP BY, exposto pelo API Gateway |
 | Landing page | [`src/index.html`](./src/index.html) | Página publicada no S3 |
 
 ## 2. Estrutura do repositório
@@ -25,7 +30,11 @@ Projeto 2 da disciplina de Computação em Nuvem (turma 5J11 · 2026.02). O VetC
 ```text
 .
 ├── docs/
+│   ├── evidencias/            # Prints da aplicação e da AWS
 │   └── ia-log.md              # Registro de uso de IA
+├── lambdas/
+│   ├── miniatura/             # Lambda disparada pelo S3 (index.js + package.json)
+│   └── relatorio/             # Lambda do API Gateway (index.js + package.json)
 ├── specs/
 │   ├── spec.md                # Especificação
 │   ├── design.md              # Arquitetura e design
@@ -36,13 +45,13 @@ Projeto 2 da disciplina de Computação em Nuvem (turma 5J11 · 2026.02). O VetC
 │   └── schema.sql             # Tabelas + carga inicial dos veterinários
 ├── src/
 │   ├── app/
-│   │   ├── server.js          # API do CRUD (Node.js + Express)
+│   │   ├── server.js          # API (Node.js + Express)
 │   │   ├── package.json
 │   │   ├── .env.example       # Modelo do arquivo de configuração (sem senha)
 │   │   └── public/
-│   │       └── index.html     # Telas de tutores e pets
+│   │       └── index.html     # Telas: tutores, pets, consultas e relatório
 │   └── index.html             # Landing page (S3)
-├── .gitignore                 # Impede que o .env vá para o repositório
+├── .gitignore                 # Impede que .env, node_modules e .zip vão para o repositório
 └── README.md
 ```
 
@@ -53,10 +62,12 @@ A arquitetura completa, com diagramas, está no [`design.md`](./specs/design.md)
 | Camada | Serviço |
 | :--- | :--- |
 | Landing page | Amazon S3 (Static Website Hosting) |
-| Aplicação (API + telas do CRUD) | Amazon EC2 `t3.micro` (Ubuntu) na subnet pública, com Node.js + Express |
+| Aplicação (API + telas) | Amazon EC2 `t3.micro` (Ubuntu) na subnet pública, com Node.js + Express |
 | Banco de dados | Amazon RDS **MySQL** `db.t3.micro` em subnets privadas, sem acesso público |
-| Fotos e relatório *(entrega de 30/10)* | Amazon S3 (bucket privado) + AWS Lambda; relatório via API Gateway + Lambda |
-| Rede | VPC `vetcare-vpc` com subnet pública (rota para o Internet Gateway) e subnets privadas (sem rota para a internet), sem NAT Gateway |
+| Fotos dos pets | Amazon S3 (bucket privado) com upload por URL pré-assinada |
+| Miniaturas | AWS Lambda (Node.js 22) disparada pelo S3, dentro da VPC, com log no CloudWatch |
+| Relatório | Amazon API Gateway (HTTP API) + AWS Lambda (Node.js 22), dentro da VPC |
+| Rede | VPC `vetcare-vpc` com subnet pública (Internet Gateway) e subnets privadas (sem internet), VPC Gateway Endpoint para o S3, sem NAT Gateway |
 
 ---
 
@@ -139,7 +150,7 @@ aws s3 cp index.html s3://$BUCKET/index.html
 ### 4.4 Criar a EC2 da aplicação
 
 1. Abrir o serviço **EC2** → **Launch instance**.
-2. **Name:** `vetcare-app-server`. **AMI:** Ubuntu Server 24.04 LTS. **Instance type:** `t3.micro`. **Key pair:** `vockey`.
+2. **Name:** `vetcare-app-server`. **AMI:** Ubuntu Server LTS (o projeto usa Ubuntu 26.04 LTS). **Instance type:** `t3.micro`. **Key pair:** `vockey`.
 3. Em **Network settings → Edit**: **VPC** `vetcare-vpc`, **Subnet** `vetcare-subnet-public1-us-east-1a`, **Auto-assign public IP** = **Enable**.
 4. **Firewall:** criar o security group `vetcare-ec2-sg` com as regras de entrada:
    * **HTTP (80)** de `0.0.0.0/0`: acesso às telas da aplicação.
@@ -160,40 +171,54 @@ aws s3 cp index.html s3://$BUCKET/index.html
 7. Clicar em **Create database** e aguardar o status **Available** (cerca de 10 minutos).
 8. Em **EC2 → Security Groups → vetcare-rds-sg → Edit inbound rules**, deixar apenas: **MySQL/Aurora (3306)** com origem no security group `vetcare-ec2-sg`.
 
-Para obter o endereço do banco (usado no passo 4.7), executar no **CloudShell**:
+Para obter o endereço do banco (usado nos passos 4.10 e 4.11), executar no **CloudShell**:
 
 ```bash
 aws rds describe-db-instances --db-instance-identifier vetcare-db \
   --query "DBInstances[0].Endpoint.Address" --output text
 ```
 
-### 4.6 Instalar a aplicação na EC2
+### 4.6 Criar o bucket das fotos (S3)
 
-1. **EC2 → Instances → vetcare-app-server → Connect → EC2 Instance Connect → Connect.**
-2. Instalar o Node.js 22 (somente na primeira vez). A aplicação usa a opção `--env-file`, que exige **Node.js 20 ou superior**; o pacote padrão do Ubuntu pode instalar uma versão mais antiga:
+1. **S3 → Criar bucket** → nome `vetcare-fotos-5j11-2026` → região `us-east-1` → manter **Bloquear todo o acesso público** marcado → Criar.
+2. No bucket → **Permissões → CORS → Editar** → colar e salvar:
+
+   ```json
+   [{"AllowedHeaders":["*"],"AllowedMethods":["GET","POST"],"AllowedOrigins":["*"],"ExposeHeaders":[]}]
+   ```
+
+### 4.7 Dar acesso ao S3 para a EC2
+
+**EC2 → Instâncias → vetcare-app-server → Ações → Segurança → Modificar função do IAM** → `LabInstanceProfile` → **Atualizar função do IAM**. Com isso o servidor assina as URLs do S3 sem nenhuma chave no código.
+
+### 4.8 Security Group das Lambdas e VPC Gateway Endpoint
+
+1. **EC2 → Grupos de segurança → Criar grupo de segurança** → nome `vetcare-lambda-sg` → VPC `vetcare-vpc` → **sem regras de entrada** → Criar.
+2. No **vetcare-rds-sg → Editar regras de entrada → Adicionar regra** → **MySQL/Aurora (3306)** com origem `vetcare-lambda-sg` → Salvar.
+3. **VPC → Endpoints → Criar endpoint** → nome `vetcare-s3-endpoint` → **Serviços da AWS** → `com.amazonaws.us-east-1.s3` do tipo **Gateway** → VPC `vetcare-vpc` → tabelas de rotas `RDS-Pvt-rt` e `vetcare-rtb-private1-us-east-1a` → política **Acesso total** → Criar.
+
+### 4.9 Instalar a aplicação na EC2
+
+1. **EC2 → Instâncias → vetcare-app-server → Conectar → EC2 Instance Connect → Conectar.**
+2. Instalar o Node.js 22 e o cliente MySQL (somente na primeira vez). A aplicação usa a opção `--env-file`, que exige **Node.js 20 ou superior**:
 
    ```bash
    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-   sudo apt-get install -y nodejs
+   sudo apt-get install -y nodejs git mysql-client
    node -v
    ```
 
-   O último comando deve mostrar `v22.x.x`.
-
-3. Baixar o repositório e copiar a aplicação e o script SQL para a pasta `~/vetcare-app`:
+3. Baixar o repositório e copiar a aplicação e o script SQL para `~/vetcare-app`:
 
    ```bash
-   sudo apt-get install -y git mysql-client
-   git clone <URL-do-repositório-no-GitHub> ~/vetcare-repo
+   cd ~ && (test -d vetcare-repo && git -C vetcare-repo pull) || git clone https://github.com/AnaBeatrizOliver/Projeto-de-Nuvem-.git ~/vetcare-repo
    mkdir -p ~/vetcare-app
    cp -r ~/vetcare-repo/src/app/. ~/vetcare-app/
    cp -r ~/vetcare-repo/sql ~/vetcare-app/
    cd ~/vetcare-app && npm install
    ```
 
-   Se o repositório for privado, o `git clone` pede o usuário do GitHub e um *personal access token* no lugar da senha.
-
-### 4.7 Configurar o acesso ao banco (arquivo `.env`)
+### 4.10 Configurar a aplicação (arquivo `.env`)
 
 O arquivo `.env` existe **somente na EC2** e está no `.gitignore` (RNF-02).
 
@@ -201,7 +226,7 @@ O arquivo `.env` existe **somente na EC2** e está no `.gitignore` (RNF-02).
 cd ~/vetcare-app && nano .env
 ```
 
-Preencher com base no [`src/app/.env.example`](./src/app/.env.example), trocando o endereço e a senha. Salvar com **Ctrl+O → Enter** e sair com **Ctrl+X**:
+Preencher com base no [`src/app/.env.example`](./src/app/.env.example). Salvar com **Ctrl+O → Enter** e sair com **Ctrl+X**:
 
 ```text
 DB_HOST=<endpoint do RDS, terminado em .rds.amazonaws.com>
@@ -210,11 +235,14 @@ DB_USER=admin
 DB_PASSWORD=<senha do RDS>
 DB_NAME=vetcare
 PORT=80
+AWS_REGION=us-east-1
+BUCKET_FOTOS=vetcare-fotos-5j11-2026
+RELATORIO_API_URL=<URL de invocação do API Gateway>/relatorios/consultas-por-veterinario
 ```
 
-Depois, proteger o arquivo: `chmod 600 .env`.
+Depois, proteger o arquivo: `chmod 600 .env`. O `RELATORIO_API_URL` é preenchido depois do passo 4.12.
 
-### 4.8 Criar as tabelas (scripts SQL)
+### 4.11 Criar as tabelas (script SQL)
 
 ```bash
 cd ~/vetcare-app
@@ -225,27 +253,57 @@ mysql -h "$DB_HOST" -u "$DB_USER" vetcare -e "SHOW TABLES; SELECT * FROM veterin
 unset MYSQL_PWD
 ```
 
-O último comando deve listar as tabelas `pets`, `tutores` e `veterinarios` e os 3 veterinários da carga inicial.
+O último comando deve listar as tabelas `consultas`, `pets`, `tutores` e `veterinarios` e os 3 veterinários da carga inicial.
 
-### 4.9 Iniciar a aplicação e acessar
+### 4.12 Criar as Lambdas e o API Gateway
+
+**Gerar os pacotes `.zip`** (em qualquer máquina com Node.js, a partir do repositório):
+
+```bash
+cd lambdas/miniatura && npm install --omit=dev && zip -r ../vetcare-miniatura.zip index.js package.json node_modules && cd ../..
+cd lambdas/relatorio && npm install --omit=dev && zip -r ../vetcare-relatorio.zip index.js package.json node_modules && cd ../..
+```
+
+O SDK da AWS (`@aws-sdk/client-s3`) já vem no runtime Node.js 22 da Lambda e não precisa ir no pacote.
+
+**Lambda do relatório:**
+1. **Lambda → Criar função → Criar do zero** → nome `vetcare-relatorio` → runtime **Node.js 22.x** → *Permissões*: **Usar uma função existente → LabRole**.
+2. *Configurações avançadas*: **Habilitar VPC** → `vetcare-vpc` → sub-redes `RDS-Pvt-subnet-1` e `RDS-Pvt-subnet-2` → grupo de segurança `vetcare-lambda-sg` → Criar.
+3. **Código → Fazer upload de → arquivo .zip** → `vetcare-relatorio.zip`.
+4. **Configuração → Variáveis de ambiente**: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`.
+5. **Configuração → Configuração geral**: memória 256 MB, tempo limite 15 s.
+
+**Lambda da miniatura:**
+1. Mesmo procedimento, com nome `vetcare-miniatura`, o pacote `vetcare-miniatura.zip`, as mesmas variáveis, memória **1024 MB** e tempo limite **30 s**.
+2. **Adicionar gatilho → S3** → bucket `vetcare-fotos-5j11-2026` → **Todos os eventos de criação de objetos** → **Prefixo `uploads/`** → confirmar o aviso de invocação recursiva → Adicionar. O prefixo garante que as miniaturas (gravadas em `thumbnails/`) não disparem a função de novo.
+
+**API Gateway:**
+1. **API Gateway → Criar API → API HTTP → Compilar** → integração **Lambda** `vetcare-relatorio` → nome `vetcare-api`.
+2. Rota **GET** `/relatorios/consultas-por-veterinario` → estágio `$default` com implantação automática → Criar.
+3. **CORS → Configurar**: Access-Control-Allow-Origin `*`, Allow-Methods `GET` → Salvar.
+4. Copiar o **URL de invocação** e completar o `RELATORIO_API_URL` no `.env` da EC2.
+
+### 4.13 Iniciar a aplicação e acessar
 
 ```bash
 cd ~/vetcare-app
 sudo node --env-file=.env server.js
 ```
 
-O terminal deve mostrar **"Conectado ao RDS MySQL em …"**. A aplicação fica disponível em **`http://<IP-público-da-EC2>`** (EC2 → Instances → vetcare-app-server → *Public IPv4 address*). O selo no topo da tela indica **"Conectado ao Amazon RDS"**. O servidor fica no ar enquanto esse terminal estiver aberto.
+O terminal deve mostrar **"Fotos no bucket …"**, **"Relatório configurado"** e **"Conectado ao RDS MySQL em …"**. A aplicação fica disponível em **`http://<IP-público-da-EC2>`** (EC2 → Instâncias → vetcare-app-server → *Endereço IPv4 público*). O servidor fica no ar enquanto esse terminal estiver aberto.
 
-### 4.10 Retomar o sistema numa nova sessão do Learner Lab (RNF-03)
+Os logs das Lambdas ficam em **Lambda → (função) → Monitorar → Visualizar logs do CloudWatch**.
+
+### 4.14 Retomar o sistema numa nova sessão do Learner Lab (RNF-03)
 
 Os recursos continuam na conta entre as sessões. Para o sistema voltar a funcionar:
 
 1. Clicar em **Start Lab** e abrir o console na região **`us-east-1`**.
-2. **RDS:** se o `vetcare-db` estiver *Stopped*, selecionar **Actions → Start** e aguardar **Available**. O endpoint não muda.
+2. **RDS:** se o `vetcare-db` estiver *Interrompido*, selecionar **Ações → Iniciar** e aguardar **Disponível**. O endpoint não muda.
 3. **EC2:** a instância é religada automaticamente pelo Learner Lab e recebe um **novo IP público**. Nenhum IP está fixo no código: as telas chamam a API pelo mesmo endereço em que foram abertas (`/api/...`).
-4. Conectar na EC2 (EC2 Instance Connect) e executar os comandos do passo 4.9. O `.env` continua salvo na EC2.
+4. Conectar na EC2 (EC2 Instance Connect) e executar os comandos do passo 4.13. O `.env` continua salvo na EC2.
 5. Acessar `http://<novo-IP-público-da-EC2>`.
-6. **Landing page:** continua disponível no mesmo endereço do S3.
+6. **Lambdas, API Gateway, buckets e landing page** não dependem da sessão: continuam com os mesmos endereços.
 
 ---
 
@@ -265,6 +323,5 @@ Se o orçamento do laboratório for ultrapassado, a conta é desativada e **todo
 | Nome | RA |
 | :--- | :--- |
 | Ana Beatriz Pereira de Oliveira | 10444937 |
-| *(nome do integrante)* | *(RA)* |
-| *(nome do integrante)* | *(RA)* |
-| *(nome do integrante)* | *(RA)* |
+| Isaac Luiz Koga Carone | 10723323 |
+| Nicholas Lopes Pereira | 10723200 |

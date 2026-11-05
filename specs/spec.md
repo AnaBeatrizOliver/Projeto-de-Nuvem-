@@ -150,6 +150,7 @@ O VetCare é uma aplicação web, publicada na AWS, que centraliza tutores, pets
 4. Remarcar uma consulta segue as mesmas regras, sem considerar conflito com ela mesma.
 5. Uma consulta "agendada" pode virar "realizada" (somente depois do horário marcado, com as observações do atendimento) ou "cancelada" (o horário fica livre). Consultas realizadas ou canceladas não podem mais ser alteradas.
 6. A agenda mostra as consultas de um veterinário em um dia, em ordem de horário.
+7. Um atendimento feito sem agendamento prévio (encaixe) pode ser registrado diretamente como "realizada", com a data e hora em que aconteceu (atual ou passada), seguindo as mesmas regras de horário de funcionamento e de conflito.
 
 ### US-07: Consultar o histórico do pet
 **Requisito:** RF-07

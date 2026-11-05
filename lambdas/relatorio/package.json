@@ -1,0 +1,10 @@
+{
+  "name": "vetcare-lambda-relatorio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VetCare - Lambda do relatório de consultas por veterinário e espécie, exposta pelo API Gateway (RF-04)",
+  "main": "index.js",
+  "dependencies": {
+    "mysql2": "^3.11.0"
+  }
+}

@@ -316,3 +316,72 @@ Nesta sessão o grupo implantou a infraestrutura na AWS e o CRUD do RF-01. Foram
 | **Corrigido** | RDS criado na VPC errada; endpoint do S3 usado como endereço do banco; acento quebrado no script SQL; SSH aberto para a internet; design, README e spec atualizados para EC2 e MySQL |
 
 **Aprendizado do grupo:** seguir uma IA passo a passo sem revisar levou a problemas sérios de segurança (senha exposta) e a divergências com a documentação. Revisar o código gerado e conferir a infraestrutura real contra o `design.md` antes de gravar o vídeo evitou entregar algo incoerente.
+
+---
+
+## Sessão 5: Preparação do Vídeo e Entrega Final (25/10 e 05/11/2026)
+
+### 1. Roteiro do vídeo de 23/10
+* **Prompt do Usuário (Isaac):**
+  > "Preciso da sua ajuda para montar o vídeo da apresentação de forma que resuma tudo o que o professor pediu e que não seja muito difícil de explicar."
+* **Resposta da IA:**
+  * Montou um roteiro de cerca de 4min30, na ordem dos critérios de avaliação (rede, banco, CRUD com persistência, segurança e documentação), indicando em cada tela onde clicar e o que falar.
+  * Preparou os comandos do terminal para mostrar a estrutura das tabelas e comprovar a persistência com um `SELECT` com JOIN.
+* **Decisão do Grupo:**
+  * **Corrigido:** a primeira versão das falas ficou curta demais e com tom robotizado; o grupo pediu um texto mais natural, que foi reescrito em tom de conversa.
+  * **Aceito:** a organização das abas do navegador na ordem do roteiro e a separação entre o terminal do servidor e o terminal de consultas ao banco.
+
+---
+
+### 2. Revisão do que faltava para a entrega final
+* **Prompt do Usuário (Isaac):**
+  > "O que está faltando para terminar o projeto?"
+* **Resposta da IA:**
+  * Comparou o enunciado com o repositório e mostrou que os requisitos da entrega de 30/10 (RF-02 upload, RF-03 Lambda disparada pelo S3, RF-04 relatório no API Gateway) ainda não tinham sido implementados, além das consultas previstas na spec.
+  * Encontrou um erro no repositório: o `.gitignore` estava escrito `t .env`, ou seja, **não protegia** o arquivo com a senha do banco.
+  * Apresentou duas opções: um relatório simplificado sem consultas, ou implementar consultas para manter spec, design e código coerentes.
+* **Decisão do Grupo:**
+  * **Aceitou** a opção completa, implementando consultas, upload, miniatura e relatório.
+  * **Corrigido:** o `.gitignore` passou a bloquear `.env`, `node_modules/` e os pacotes `.zip`.
+
+---
+
+### 3. Implementação de fotos, consultas, Lambdas e relatório
+* **Prompt do Usuário (Isaac):**
+  > "Vamos fazer o que está faltando, pois eu preciso tirar uma nota muito boa."
+* **Resposta da IA:**
+  * Gerou a nova versão do `server.js` (URL pré-assinada do S3, consultas com controle de conflito por transação e `SELECT ... FOR UPDATE`, histórico do pet, inativação que cancela consultas futuras), as telas de consultas, histórico, foto e relatório, o `schema.sql` com a tabela `consultas` e as duas Lambdas (`vetcare-miniatura` e `vetcare-relatorio`).
+  * Propôs as Lambdas em **Node.js 22 com Jimp**, em vez de Python com Pillow, para evitar a necessidade de uma *Lambda Layer* compilada (ADR-006).
+  * Testou tudo antes de entregar: a API contra um banco MySQL local, a Lambda de miniatura com um S3 simulado (imagem válida, arquivo corrompido, pet inexistente e arquivo fora de `uploads/`) e as telas em um navegador automatizado.
+  * Separou os passos da AWS que não dependiam do código (bucket, `LabInstanceProfile`, Security Group das Lambdas e Gateway Endpoint) para o grupo fazer em paralelo.
+* **Decisão do Grupo:**
+  * **Aceito:** a arquitetura com as Lambdas na VPC usando o Gateway Endpoint e o `vetcare-lambda-sg`.
+  * **Aceito, com ajuste na spec:** para o relatório ter dados reais na demonstração, foi incluída a opção de **registrar um atendimento já realizado (encaixe)**, que virou o critério 7 da US-06.
+  * **Corrigido durante a revisão de coerência:** a spec pedia filtro de pets por tutor, que não existia na tela; o filtro foi acrescentado. O histórico do pet passou a se atualizar depois da inativação.
+  * **Aceito:** a atualização do `design.md` (diagrama, rotas, Security Groups e ADR-004 a ADR-006), do `README.md` e do `tasks.md` para refletir o que está rodando.
+
+---
+
+## Síntese da Sessão 5
+
+| Tipo | Itens |
+| :--- | :--- |
+| **Aceito** | Roteiro do vídeo; implementação completa de RF-02, RF-03, RF-04, RF-06 e RF-07; Lambdas em Node.js com Jimp; Security Group próprio para as Lambdas |
+| **Rejeitado** | Relatório simplificado sem consultas; falas do vídeo em tom robotizado |
+| **Corrigido** | `.gitignore` que não protegia o `.env`; falta do filtro por tutor; histórico que não se atualizava; spec ajustada para o registro de encaixe |
+
+---
+
+## Reflexão Final
+
+**O que funcionou.** Trabalhar com a especificação antes do código fez diferença: quando o design mudou (de Lambda para EC2 e de PostgreSQL para MySQL), a spec continuou válida e serviu de checklist para conferir se o código fazia o que prometia. Os critérios de aceite escritos de forma testável viraram roteiro de teste e de demonstração no vídeo.
+
+**Onde a IA ajudou.** A IA acelerou a escrita de documentos, código e comandos, e foi especialmente útil como **revisora**: apontou o loop infinito da Lambda de miniatura, o CRUD incompleto, a senha exposta, o `.gitignore` quebrado e várias incoerências entre spec, design e implementação.
+
+**Onde a IA errou.** A IA também gerou problemas que só apareceram porque o grupo revisou: a senha do banco escrita no código, tabelas criadas pelo próprio servidor em vez de scripts versionados, `ON DELETE CASCADE` contrariando a spec, documentos misturando conteúdo de outros artefatos e incoerências entre arquivos que ela mesma havia escrito. Seguir uma IA passo a passo sem entender cada etapa, como aconteceu na criação da infraestrutura, levou a erros de segurança que custaram tempo para corrigir.
+
+**O que o grupo aprendeu sobre a nuvem.** Na prática, a diferença entre subnet pública e privada está na tabela de rotas; Security Groups que usam outro grupo como origem são mais seguros e sobrevivem à troca de IP; Lambdas dentro da VPC não têm internet e precisam de um Gateway Endpoint para acessar o S3; e no Learner Lab o orçamento é um requisito de arquitetura (sem NAT Gateway, instâncias pequenas e recursos parados ao fim da sessão).
+
+**O que faríamos diferente.** Começaríamos a infraestrutura mais cedo, com todos os integrantes acompanhando, para não concentrar as entregas de 30/10 e 06/11 no fim do prazo. Também revisaríamos cada trecho gerado pela IA antes de executá-lo, principalmente quando envolve credenciais, e manteríamos o `design.md` atualizado a cada mudança, e não só no momento da entrega.
+
+**Conclusão.** A IA escreveu boa parte do projeto, mas as decisões foram do grupo: escolher EC2 para o CRUD, manter o MySQL, aceitar CPF fictício, implementar as consultas e rejeitar o que contrariava a especificação. O resultado é um sistema em que spec, design, código e infraestrutura contam a mesma história.

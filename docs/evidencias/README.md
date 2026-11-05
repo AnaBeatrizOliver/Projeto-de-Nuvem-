@@ -19,6 +19,7 @@ Prints da aplicação funcionando e dos recursos criados na AWS (Learner Lab, re
 | 13 | `13-lambda-miniatura-gatilho.png` | Lambda `vetcare-miniatura` com o gatilho do S3 (prefixo `uploads/`) | RF-03 |
 | 14 | `14-cloudwatch-miniatura.png` | Log da Lambda de miniatura no CloudWatch (início, fim) | RF-03 |
 | 15 | `15-tela-consultas.png` | Agenda de consultas e mensagem de conflito de horário | RF-06 |
+| 15b | `15b-agenda-todos-os-dias.png` | Agenda com a consulta realizada (encaixe) e a agendada no mesmo veterinário | RF-06 |
 | 16 | `16-tela-historico.png` | Histórico de consultas de um pet | RF-07 |
 | 17 | `17-api-gateway-rota.png` | API Gateway `vetcare-api` com a rota `GET /relatorios/consultas-por-veterinario` | RF-04 |
 | 18 | `18-tela-relatorio.png` | Tela de relatório com o resultado | RF-04 |

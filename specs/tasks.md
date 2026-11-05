@@ -4,8 +4,6 @@ Cada tarefa está ligada a um requisito do [`spec.md`](./spec.md) e a uma decis�
 
 **Status:** ✅ Concluída · 🔄 Em andamento · ⏳ Pendente
 
-> Os responsáveis marcados como *(definir)* devem ser preenchidos pelo grupo.
-
 ## Entrega 1 — 09/10
 
 | ID | Tarefa | Requisito | Responsável | Status |
@@ -48,24 +46,24 @@ Cada tarefa está ligada a um requisito do [`spec.md`](./spec.md) e a uma decis�
 | ID | Tarefa | Requisito | Responsável | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | T-23 | Acrescentar ao `sql/schema.sql` as colunas de foto e a tabela `consultas` | RF-02, RF-06 | Isaac | ✅ |
-| T-24 | Criar o bucket de fotos privado com CORS | RF-02 | Isaac | 🔄 |
-| T-25 | Associar o `LabInstanceProfile` à EC2 | RF-02 | Isaac | 🔄 |
+| T-24 | Criar o bucket de fotos privado com CORS | RF-02 | Isaac | ✅ |
+| T-25 | Associar o `LabInstanceProfile` à EC2 | RF-02 | Isaac | ✅ |
 | T-26 | Rota de URL pré-assinada e envio da foto pela tela | RF-02 | Isaac | ✅ |
-| T-27 | Criar o `vetcare-lambda-sg` e o VPC Gateway Endpoint para o S3 | RF-03, RNF-01 | Isaac | 🔄 |
-| T-28 | Lambda de miniatura disparada pelo S3, com log no CloudWatch | RF-03 | Isaac | 🔄 |
+| T-27 | Criar o `vetcare-lambda-sg` e o VPC Gateway Endpoint para o S3 | RF-03, RNF-01 | Isaac | ✅ |
+| T-28 | Lambda de miniatura disparada pelo S3, com log no CloudWatch | RF-03 | Isaac | ✅ |
 | T-29 | CRUD de consultas com controle de conflito de horário | RF-06 | Isaac | ✅ |
 | T-30 | Histórico de consultas do pet | RF-07 | Isaac | ✅ |
 | T-31 | Busca de tutores, filtros de pets (espécie, tutor, situação) e paginação nas telas | RF-08 | Isaac | ✅ |
-| T-32 | Lambda de relatório exposta pelo API Gateway (JOIN + GROUP BY) | RF-04 | Isaac | 🔄 |
+| T-32 | Lambda de relatório exposta pelo API Gateway (JOIN + GROUP BY) | RF-04 | Isaac | ✅ |
 | T-33 | Tela de relatório chamando o API Gateway | RF-04, RF-05 | Isaac | ✅ |
 | T-34 | Atualizar `design.md` com o que está rodando (diagrama, rotas, SGs, ADR-004 a ADR-006) | — | Isaac | ✅ |
 | T-35 | Atualizar `README.md` com o passo a passo de S3, Lambdas, Endpoint e API Gateway | RNF-03, RNF-05 | Isaac | ✅ |
-| T-36 | Implantar a nova versão na EC2 e recriar as tabelas `pets` e `consultas` | RF-01 a RF-06 | Isaac | 🔄 |
+| T-36 | Implantar a nova versão na EC2 e recriar as tabelas `pets` e `consultas` | RF-01 a RF-06 | Isaac | ✅ |
 
 ## Entrega final — 06/11
 
 | ID | Tarefa | Requisito | Responsável | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| T-37 | Prints da aplicação e dos recursos AWS em `docs/evidencias/` | — | *(definir)* | ⏳ |
+| T-37 | Prints da aplicação e dos recursos AWS em `docs/evidencias/` | — | Isaac | ✅ |
 | T-38 | Reflexão final no `ia-log.md` | — | Isaac | ✅ |
-| T-39 | Gerar o ZIP e enviar no Moodle com o link do repositório | — | *(definir)* | ⏳ |
+| T-39 | Gerar o ZIP e enviar no Moodle com o link do repositório | — | Isaac | 🔄 |

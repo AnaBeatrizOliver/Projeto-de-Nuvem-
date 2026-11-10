@@ -362,13 +362,29 @@ Nesta sessão o grupo implantou a infraestrutura na AWS e o CRUD do RF-01. Foram
 
 ---
 
+### 4. Configuração na AWS e testes de ponta a ponta
+* **Prompt do Usuário (Isaac):**
+  > "Pronto, terminei de configurar tudo essa parte do vetcare-relatorio." (seguido de prints de cada etapa)
+* **Resposta da IA:**
+  * Analisou o teste da Lambda de relatório: a resposta 500 demorou cerca de 10 segundos, o tempo limite de conexão do MySQL. Concluiu que era **rede, não código**: faltava a regra da porta 3306 do `vetcare-lambda-sg` no `vetcare-rds-sg`. Depois da correção, o log passou a mostrar `ER_NO_SUCH_TABLE` em 140 ms, provando que a Lambda já alcançava o RDS.
+  * Ao subir o servidor na EC2, percebeu pelos logs que ainda rodava a **versão antiga** do `server.js` (faltavam as linhas de bucket e relatório) e orientou baixar o repositório de novo.
+  * Identificou que o comando `cat >> .env <<'EOF'` travou o terminal porque o texto colado veio com espaços antes do `EOF`, e o substituiu por um `printf` de uma linha.
+  * Conferiu os prints das evidências um a um e organizou os arquivos em `docs/evidencias/`.
+* **Decisão do Grupo:**
+  * **Corrigido:** regra de entrada do `vetcare-rds-sg` (3306 da EC2 e das Lambdas) e variáveis `AWS_REGION`, `BUCKET_FOTOS` e `RELATORIO_API_URL` no `.env` da EC2.
+  * **Corrigido:** o print da landing page aberta pelo arquivo local foi descartado, porque não prova a hospedagem no S3; foi usado o endpoint do site estático.
+  * **Aceito:** o teste completo (pet → foto → miniatura → consulta com conflito → encaixe → relatório) e os logs do CloudWatch como evidência do RF-03.
+  * **Cuidado de segurança:** um print das variáveis de ambiente da Lambda mostrou a senha do banco; ele **não** foi usado nas evidências nem no vídeo.
+
+---
+
 ## Síntese da Sessão 5
 
 | Tipo | Itens |
 | :--- | :--- |
 | **Aceito** | Roteiro do vídeo; implementação completa de RF-02, RF-03, RF-04, RF-06 e RF-07; Lambdas em Node.js com Jimp; Security Group próprio para as Lambdas |
 | **Rejeitado** | Relatório simplificado sem consultas; falas do vídeo em tom robotizado |
-| **Corrigido** | `.gitignore` que não protegia o `.env`; falta do filtro por tutor; histórico que não se atualizava; spec ajustada para o registro de encaixe |
+| **Corrigido** | `.gitignore` que não protegia o `.env`; falta do filtro por tutor; histórico que não se atualizava; spec ajustada para o registro de encaixe; regra 3306 das Lambdas no `vetcare-rds-sg`; `.env` da EC2 sem as variáveis novas |
 
 ---
 
